@@ -6,8 +6,8 @@ const path = require('path');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
-console.log(path.join(__dirname, '..', 'client', 'build'))
+app.use(express.static(path.join(__dirname, '.', 'client', 'build')));
+console.log(path.join(__dirname, '.', 'client', 'build'))
 
 app.get('/test', (req, res) => {
     res.send({ ok: true })
