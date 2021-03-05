@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import Login from './view/components/Login/login'
+import React, { useState } from 'react';
+import Login from './view/components/Login/Login'
+import Games from './view/components/Games/Games'
 
 function App() {
 
@@ -10,10 +11,11 @@ function App() {
   //       console.log(data)
   //     })
   // }, [])
-
+  const [loggedIn, setLoggedIn] = useState(false)
   return (
     <div className="App">
-      <Login />
+      {!loggedIn ? <Login setLoggedIn={setLoggedIn} /> : <Games />}
+
     </div>
   );
 }

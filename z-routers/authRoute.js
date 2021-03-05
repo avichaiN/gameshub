@@ -15,5 +15,11 @@ router
     .route("/guest")
     .get(authController.loginAsGuest)
 
+router
+    .route("/checkCookie")
+    .get(authController.checkCookie)
+
+
+
 
 module.exports = router

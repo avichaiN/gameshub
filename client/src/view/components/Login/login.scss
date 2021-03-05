@@ -47,6 +47,19 @@
             padding: 5px;
             display: flex;
             flex-direction: column;
+
+            .passwordStrength {
+                width: 85%;
+                margin: auto;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 2px;
+            }
+            .passwordRequirements{
+                display: flex;
+                flex-direction: column;
+            }
         }
     }
 }

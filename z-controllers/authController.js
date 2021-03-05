@@ -1,15 +1,43 @@
 const User = require("../z-models/user");
 const bcrypt = require("bcrypt");
-// const jwt = require("jwt-simple");
+const jwt = require("jwt-simple");
 const saltRounds = 12;
 
-exports.loginUser = (req, res) => {
-    const { username, password } = req.body
+exports.loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const userFound = await User.findOne({
+            $or: [{ username: username }, { email: username }],
+        });
 
-    console.log('in login')
+        hash = userFound.password;
+        bcrypt.compare(password, hash, function (err, result) {
+            if (result) {
+                const token = jwt.encode(
+                    {
+                        id: userFound._id,
+                        role: userFound.role,
+                        username: userFound.username,
+                        time: new Date().getTime(),
+                    },
+                    process.env.SECRET
+                );
+                res.cookie("userLoggedIn", token, {
+                    maxAge: 9200000,
+                    httpOnly: true,
+                });
+                res.send({ status: "authorized" });
+            } else {
+                res.send({ status: "unauthorized" });
 
-    res.send({ ok: true })
+            }
+        });
+    } catch (e) {
+        console.log(e.message);
+        res.send({ status: "unauthorized" });
+    }
 }
+
 
 exports.registerUser = (req, res) => {
     console.log(req.body)
@@ -26,10 +54,25 @@ exports.registerUser = (req, res) => {
         try {
             newUser.password = hash;
             await newUser.save();
-            res.send({ ok: true })
+
+            const token = jwt.encode(
+                {
+                    id: newUser._id,
+                    role: newUser.role,
+                    username: newUser.username,
+                    time: new Date().getTime(),
+                },
+                process.env.SECRET
+            );
+            res.cookie("userLoggedIn", token, {
+                maxAge: 9200000,
+                httpOnly: true,
+            });
+
+            res.send({ status: "authorized" });
         } catch (e) {
             console.log(e.message);
-            res.send({ ok: false })
+            res.send({ status: "unauthorized" });
         }
     })
 
@@ -37,5 +80,26 @@ exports.registerUser = (req, res) => {
 
 exports.loginAsGuest = (req, res) => {
 
-    res.send({ ok: true })
+    const token = jwt.encode(
+        {
+            time: new Date().getTime(),
+        },
+        process.env.SECRET
+    );
+    res.cookie("guestLogged", token, {
+        maxAge: 9200000,
+        httpOnly: true,
+    });
+    res.send({ status: "authorized" });
+}
+exports.checkCookie = (req, res) => {
+    try {
+        if (req.cookies.userLoggedIn) {
+            res.send({ status: 'authorized' })
+        } else {
+            res.send({ status: 'unauthorized' })
+        }
+    } catch (e) {
+        console.log(e.message)
+    }
 }
