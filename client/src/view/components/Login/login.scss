@@ -1,0 +1,52 @@
+.login__Container {
+
+    border: 1px solid black;
+    width: 50%;
+    margin: auto;
+
+    .login__Nav {
+        border: 1px solid black;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+        padding: 5px;
+        margin: 1%;
+
+        // .login__navLogin {}
+
+        // .login__navRegister {}
+    }
+
+    .login__fromContainer {
+        border: 1px solid black;
+        width: 85%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        .login__Form {
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login__Guest {
+            padding: 5px;
+            margin: auto;
+        }
+    }
+
+    .login__registerForm {
+        width: 85%;
+        margin: auto;
+        border: 1px solid black;
+
+        .register__form {
+            width: 65%;
+            margin: auto;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}

@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
-
-import './App.css';
+import Login from './view/components/Login/login'
 
 function App() {
 
-  useEffect(() => {
-    fetch('/test')
-      .then(r => r.json())
-      .then(data => {
-        console.log(data)
-      })
-  }, [])
-  
+  // useEffect(() => {
+  //   fetch('/test')
+  //     .then(r => r.json())
+  //     .then(data => {
+  //       console.log(data)
+  //     })
+  // }, [])
+
   return (
     <div className="App">
-      <h1>react app</h1>
+      <Login />
     </div>
   );
 }
