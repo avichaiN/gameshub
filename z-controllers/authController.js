@@ -1,6 +1,7 @@
 const User = require("../z-models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
+const nodemailer = require("nodemailer");
 const saltRounds = 12;
 
 exports.loginUser = async (req, res) => {
@@ -91,6 +92,70 @@ exports.loginAsGuest = (req, res) => {
         httpOnly: true,
     });
     res.send({ status: "authorized" });
+}
+exports.resetPassword = async (req, res) => {
+    try {
+        const userEmail = req.body.userEmail;
+        const userFound = await User.findOne({ email: userEmail });
+        if (userFound) {
+            const userId = userFound._id;
+            const encodedId = jwt.encode(userId, process.env.SECRET);
+            const tranporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.EMAILPASSWORD,
+                },
+            });
+
+            const mailOptions = {
+                from: "GameNoStop, Support.",
+                to: `${userEmail}`,
+                subject: "GameNoStop. Reset Password.",
+                html: `localhost:3000/updatePassword?${encodedId}`,
+            };
+
+            tranporter.sendMail(mailOptions, function (e, info) {
+                if (e) {
+                    res.send({ email: "failed" });
+                } else {
+                    res.send({ email: "success" });
+                }
+            });
+        } else {
+            res.send({ email: "failed" });
+        }
+    } catch (e) {
+        res.send({ status: "unauthorized" })
+        console.log(e.message)
+    }
+}
+exports.updatePassword = (req, res) => {
+    let newPassword = req.body.newPassword;
+    bcrypt.hash(newPassword, saltRounds, async function (err, hash) {
+        try {
+            newPassword = hash;
+            const encodedId = req.headers.referer.replace(
+                "http://localhost:3000/updatePassword?",
+                ""
+            );
+
+            const decodedId = jwt.decode(encodedId, process.env.SECRET);
+            const userFound = await User.findOneAndUpdate(
+                { _id: decodedId },
+                {
+                    password: hash,
+                }
+            );
+
+
+            res.send({ user: "updated" });
+        } catch (e) {
+            res.send({ user: "notUpdated" });
+            console.log(e);
+
+        }
+    });
 }
 exports.checkCookie = (req, res) => {
     try {

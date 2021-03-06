@@ -9,9 +9,9 @@ import {
     Link,
 } from "react-router-dom";
 
+
 const Login = ({ setLoggedIn }) => {
 
-    const [badCredentials, setBadCredentials] = useState(false)
 
     useEffect(() => {
         fetch('/checkCookie')
@@ -34,44 +34,108 @@ const Login = ({ setLoggedIn }) => {
 
                 <Switch>
                     <Route path="/register">
-                        <RegisterForm setLoggedIn={setLoggedIn} badCredentials={badCredentials} setBadCredentials={setBadCredentials} />
+                        <RegisterForm setLoggedIn={setLoggedIn} />
+                    </Route>
+                    <Route path="/updatePassword">
+                        <UpdatePassword />
                     </Route>
                     <Route path="/">
-                        <LoginForm setLoggedIn={setLoggedIn} badCredentials={badCredentials} setBadCredentials={setBadCredentials} />
+                        <LoginForm setLoggedIn={setLoggedIn} />
                     </Route>
                 </Switch>
             </div>
         </Router>
     )
 }
-const LoginForm = ({ setLoggedIn, badCredentials, setBadCredentials }) => {
+
+const LoginForm = ({ setLoggedIn }) => {
+    const [forgotPassword, setForgotPassword] = useState(false)
+    const [badCredentials, setBadCredentials] = useState(false)
+    const [enterUsername, setEnterUsername] = useState(false)
+    const [enterPassword, setEnterPassword] = useState(false)
+
+    const [emptyUsernameColor, setUsernameColor] = useState('1px solid black')
+    const [emptyPasswordColor, setPasswordColor] = useState('1px solid black')
+
+    const [enterEmail, setEnterEmail] = useState(false)
+    const [emptyEmailColor, setEmailColor] = useState('1px solid black')
+    const [emailNotFound, setEmailNotFound] = useState(false)
 
     return (
-        <div className='login__fromContainer'>
-            <form onSubmit={handleLogin(setLoggedIn, setBadCredentials)} className='login__Form'>
-                {badCredentials ? <div>sorry wrong info</div> : null}
-                <input type='text' pattern="[A-Za-z0-9]+" required name='username' placeholder='Username' />
-                <input type='password' required name='password' placeholder='Passowrd' />
-                <button>Login</button>
-            </form>
 
-            <button onClick={handleEnterAsGuest(setLoggedIn)} className='login__Guest'>Enter as guest</button>
-        </div>
+        < div >
+
+            {!forgotPassword ?
+                <div className='login__fromContainer'>
+                    <form onSubmit={handleLogin(setLoggedIn, setBadCredentials, setEnterUsername, setEnterPassword, setUsernameColor, setPasswordColor)} className='login__Form'>
+                        {badCredentials ? <div>sorry wrong info</div> : null}
+
+                        <input style={{ border: emptyUsernameColor }} type='text' pattern="[A-Za-z0-9]+|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" name='username' placeholder='Username' />
+                        {enterUsername ? <label>Please enter Username/Email</label> : null}
+                        <input style={{ border: emptyPasswordColor }} type='password' name='password' placeholder='Passowrd' />
+                        {enterPassword ? <label>Please enter Password</label> : null}
+                        <button>Login</button>
+
+                        <button onClick={() => handleForgotPassword(setForgotPassword)} type='button'>Forgot password?</button>
+                    </form>
+
+                    <button onClick={handleEnterAsGuest(setLoggedIn)} className='login__Guest'>Enter as guest</button>
+                </div>
+                :
+                <div>
+                    <h3>Reset your password</h3>
+                    <p>We'll email you instructions to reset the password.</p>
+                    <form onSubmit={sendResetPassword(setEnterEmail, setEmailColor, setEmailNotFound)}>
+                        <label >Email</label>
+                        <input name='email' style={{ border: emptyEmailColor }} type='email' />
+                        {enterEmail ? <label>Email cannot be empty</label> : null}
+                        {emailNotFound ? <p>Matching account with this E-mail not found.</p> : null}
+                        <button>Reset password</button>
+                    </form>
+                    <button onClick={() => handleGoBackToLogin(setForgotPassword)}>Back to login</button>
+                </div>
+            }
+
+        </div >
     )
 }
-const RegisterForm = ({ setLoggedIn, badCredentials, setBadCredentials }) => {
+
+const RegisterForm = ({ setLoggedIn }) => {
+    const [infoTaken, setTaken] = useState(false)
+    const [badInput, setBadInput] = useState(false)
     const [weekPassword, setWeekPassword] = useState(false)
+
+    const [enterUsername, setEnterUsername] = useState(false)
+    const [enterEmail, setEnterEmail] = useState(false)
+    const [enterPassword, setEnterPassword] = useState(false)
+
+    const [emptyUsernameColor, setUsernameColor] = useState('1px solid black')
+    const [emptyEmailColor, setEmailColor] = useState('1px solid black')
+    const [emptyPasswordColor, setPasswordColor] = useState('1px solid black')
+
     return (
         <div className='login__registerForm'>
 
-            <form onSubmit={handleRegister(setLoggedIn, setBadCredentials, setWeekPassword)} className='register__form'>
-                {badCredentials ? <div className='badCredentials'>* Username or Email is taken!</div> : null}
+            <form
+                onSubmit={
+                    handleRegister(setLoggedIn, setTaken, setWeekPassword, setBadInput,
+                        setEnterUsername, setUsernameColor,
+                        setEnterEmail, setEmailColor,
+                        setEnterPassword, setPasswordColor
+                    )
+                }
+                className='register__form'>
+                {infoTaken ? <div className='badCredentials'>* Username or Email is taken!</div> : null}
+                {badInput ? <div className='badCredentials'>* Please check you have filled the form!</div> : null}
                 {weekPassword ? <div className='badCredentials'>* Password is not strong enough!</div> : null}
 
 
-                <input type='text' required name='username' placeholder='Username' />
-                <input type='email' required name='email' placeholder='E-mail address' />
-                <input onKeyUp={checkpassword} type='password' id='password' required name='password' placeholder='Passowrd' />
+                <input style={{ border: emptyUsernameColor }} type='text' name='username' maxLength="35" placeholder='Username' />
+                {enterUsername ? <label>Please enter Username</label> : null}
+                <input style={{ border: emptyEmailColor }} type='email' name='email' maxLength="40" placeholder='E-mail address' />
+                {enterEmail ? <label>Please enter Email</label> : null}
+                <input style={{ border: emptyPasswordColor }} onKeyUp={checkpassword} type='password' maxLength="35" id='password' name='password' placeholder='Passowrd' />
+                {enterPassword ? <label>Please enter Password</label> : null}
                 <div className='passwordStrength' name='passwordBox'>
                     Password Strengh -
                     <progress max="100" name='passwordStrength' value="0" id="meter"></progress>
@@ -79,7 +143,7 @@ const RegisterForm = ({ setLoggedIn, badCredentials, setBadCredentials }) => {
                 </div>
                 {weekPassword ? <div className='passwordRequirements'>
                     <span>Password requirements:</span>
-                    <span>* At least 6 digits.</span>
+                    <span>* At least 6 characters.</span>
                     <span>* At least one Upper case / Symbol / Number.</span>
                 </div> : null}
                 <button>Create Account</button>
@@ -87,41 +151,82 @@ const RegisterForm = ({ setLoggedIn, badCredentials, setBadCredentials }) => {
         </div>
     )
 }
+const UpdatePassword = () => {
+    const [weekPassword, setWeekPassword] = useState(false)
 
-const handleLogin = (setLoggedIn, setBadLogin) => e => {
-    console.log('handle login')
+    const [matchPassword, setMatchPassword] = useState(true)
+    const [passwordsMatch, setPasswordsMatch] = useState('')
+    return (<div>
+        <h2>Update password</h2>
+        <form onSubmit={handleUpdatePassword(setMatchPassword, setWeekPassword)}>
+            {matchPassword ? <p>{passwordsMatch}</p> : <p>Passwords do not match. Try again.</p>}
+            <input onKeyDown={checkpassword} onKeyUp={checkIfPasswordsMatch(setMatchPassword, setPasswordsMatch)} type='password' name='password1' />
+            <input onKeyUp={checkIfPasswordsMatch(setMatchPassword, setPasswordsMatch)} type='password' name='password2' />
+            <div className='passwordStrength' name='passwordBox'>
+                Password Strengh -
+                    <progress max="100" name='passwordStrength' value="0" id="meter"></progress>
+                <div id="passwordStrengthText"></div>
+            </div>
+            {weekPassword ? <div className='passwordRequirements'>
+                <span>Password requirements:</span>
+                <span>* At least 6 characters.</span>
+                <span>* At least one Upper case / Symbol / Number.</span>
+            </div> : null}
+            <button>Update password</button>
+        </form>
+    </div>)
+}
+const handleLogin = (setLoggedIn, setBadLogin, setEnterUsername, setEnterPassword, setUsernameColor, setPasswordColor) => e => {
     e.preventDefault()
     const username = e.target.children.username.value
     const password = e.target.children.password.value
-    const onlyLetterNumbers = /^[0-9a-zA-Z]+$/;
+    console.log(username)
+    if (!username) {
+        setEnterUsername(true)
+        setUsernameColor('1px solid red')
+    }
+    else if (!password) {
+        setEnterPassword(true)
+        setPasswordColor('1px solid red')
 
-    if (username.match(onlyLetterNumbers)) {
-        fetch("/", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-        })
-            .then((res) => res.json())
-            .then(async (data) => {
-                if (data.status === 'authorized') {
-                    await swal({
-                        title: "Login successfully",
-                        text: 'Welcome',
-                        icon: "success",
-                        buttons: false,
-                        timer: 1500,
-                    });
-                    setLoggedIn(true)
-                } else {
-                    setBadLogin(true)
-                    setLoggedIn(false)
-                }
-            })
+        setEnterUsername(false)
+        setUsernameColor('1px solid black')
     } else {
-        setBadLogin(true)
-        setLoggedIn(false)
+        setEnterPassword(false)
+        setEnterUsername(false)
+        setUsernameColor('1px solid black')
+        setPasswordColor('1px solid black')
+
+        const onlyLetterNumbers = /^[A-Za-z0-9]+|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+
+        if (username.match(onlyLetterNumbers)) {
+            fetch("/", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, password }),
+            })
+                .then((res) => res.json())
+                .then(async (data) => {
+                    if (data.status === 'authorized') {
+                        await swal({
+                            title: "Login successfully",
+                            text: 'Welcome',
+                            icon: "success",
+                            buttons: false,
+                            timer: 1500,
+                        });
+                        setLoggedIn(true)
+                    } else {
+                        setBadLogin(true)
+                        setLoggedIn(false)
+                    }
+                })
+        } else {
+            setBadLogin(true)
+            setLoggedIn(false)
+        }
     }
 }
 
@@ -145,40 +250,65 @@ const handleEnterAsGuest = setLoggedIn => e => {
         });
 }
 
-const handleRegister = (setLoggedIn, setBadCredentials, setWeekPassword) => e => {
+const handleRegister = (setLoggedIn, setTaken, setWeekPassword, setBadInput, setEnterUsername, setUsernameColor, setEnterEmail, setEmailColor, setEnterPassword, setPasswordColor) => e => {
     e.preventDefault()
     const username = e.target.children.username.value
     const email = e.target.children.email.value
     const password = e.target.children.password.value
     const passwordStrength = e.target.children.passwordBox.children.passwordStrength.value
 
-    if (passwordStrength > 25) {
-        setWeekPassword(false)
-        fetch("/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, email, password }),
-        })
-            .then((res) => res.json())
-            .then(async (data) => {
-                if (data.status === 'authorized') {
-                    await swal({
-                        title: "Welcome!",
-                        text: "Account created successfully",
-                        icon: "success",
-                        buttons: false,
-                        timer: 1500,
-                    });
-                    setLoggedIn(true)
-                } else {
-                    setBadCredentials(true)
-                    setLoggedIn(false)
-                }
-            })
+    if (!username) {
+        setEnterUsername(true)
+        setUsernameColor('1px solid red')
+    } else if (!email) {
+        setEnterEmail(true)
+        setEmailColor('1px solid red')
+
+        setEnterUsername(false)
+        setUsernameColor('1px solid black')
+    }
+    else if (!password) {
+        setEnterPassword(true)
+        setPasswordColor('1px solid red')
+
+        setEnterEmail(false)
+        setEmailColor('1px solid black')
     } else {
-        setWeekPassword(true)
+        setEnterPassword(false)
+        setEnterUsername(false)
+        setEnterEmail(false)
+        setEmailColor('1px solid black')
+        setUsernameColor('1px solid black')
+        setPasswordColor('1px solid black')
+
+        if (passwordStrength > 25) {
+            setWeekPassword(false)
+            fetch("/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, email, password }),
+            })
+                .then((res) => res.json())
+                .then(async (data) => {
+                    if (data.status === 'authorized') {
+                        await swal({
+                            title: "Welcome!",
+                            text: "Account created successfully",
+                            icon: "success",
+                            buttons: false,
+                            timer: 1500,
+                        });
+                        setLoggedIn(true)
+                    } else {
+                        setTaken(true)
+                        setLoggedIn(false)
+                    }
+                })
+        } else {
+            setWeekPassword(true)
+        }
     }
 }
 function checkpassword(e) {
@@ -232,6 +362,90 @@ function checkpassword(e) {
             passwordStrengthText.innerText = 'Very Strong Password'
             break;
     }
+}
+const sendResetPassword = (setEnterEmail, setEmailColor, setEmailNotFound) => e => {
+    e.preventDefault()
+    const userEmail = e.target.children.email.value
+    setEmailNotFound(false)
+
+    if (!userEmail) {
+        setEnterEmail(true)
+        setEmailColor('1px solid red')
+    } else {
+        setEnterEmail(false)
+        setEmailColor('1px solid black')
+
+        fetch("/reset", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userEmail }),
+        })
+            .then((res) => res.json())
+            .then(async (data) => {
+                if (data.email === 'failed') {
+                    setEmailNotFound(true)
+                }
+                console.log(data)
+            })
+    }
+}
+const checkIfPasswordsMatch = (setMatchPassword, setPasswordsMatch) => e => {
+
+    const password1 = e.target.parentNode.children.password1.value
+    const password2 = e.target.parentNode.children.password2.value
+
+    if (password1 === password2) {
+        setMatchPassword(true)
+        setPasswordsMatch('Passwords match.')
+    }else{
+        setPasswordsMatch('Passwords do not match.')
+    }
+}
+const handleUpdatePassword = (setMatchPassword, setWeekPassword) => e => {
+    e.preventDefault();
+    const passwordStrength = e.target.children.passwordBox.children.passwordStrength.value
+
+    const password1 = e.target.children.password1.value;
+    const password2 = e.target.children.password2.value;
+    if (password1 != password2) {
+        setMatchPassword(false)
+
+    } else if (passwordStrength > 25) {
+        fetch("/reset", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password1 }),
+        })
+            .then((res) => res.json())
+            .then(async (data) => {
+                console.log(data)
+                if (data.user === 'updated') {
+                    await swal({
+                        title: "Password updated.",
+                        text: 'Please login',
+                        icon: "success",
+                        buttons: false,
+                        timer: 1500,
+                    });
+                    window.location.href = '/'
+                } else {
+                    window.location.href = '/'
+                }
+            })
+    } else {
+        setWeekPassword(true)
+    }
+
+}
+const handleForgotPassword = (setForgotPassword) => {
+    setForgotPassword(true)
+}
+const handleGoBackToLogin = (setForgotPassword) => {
+    setForgotPassword(false)
 }
 
 export default Login

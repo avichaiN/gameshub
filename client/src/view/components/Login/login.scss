@@ -3,6 +3,7 @@
     border: 1px solid black;
     width: 50%;
     margin: auto;
+    margin-top: 10%;
 
     .login__Nav {
         border: 1px solid black;
@@ -49,14 +50,16 @@
             flex-direction: column;
 
             .passwordStrength {
-                width: 85%;
+                border: 1px solid black;
+                width: 100%;
                 margin: auto;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-around;
                 padding: 2px;
             }
-            .passwordRequirements{
+
+            .passwordRequirements {
                 display: flex;
                 flex-direction: column;
             }

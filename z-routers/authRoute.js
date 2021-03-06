@@ -16,6 +16,11 @@ router
     .get(authController.loginAsGuest)
 
 router
+    .route("/reset")
+    .post(authController.resetPassword)
+    .put(authController.updatePassword)
+
+router
     .route("/checkCookie")
     .get(authController.checkCookie)
 
