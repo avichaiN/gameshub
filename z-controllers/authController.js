@@ -2,6 +2,8 @@ const User = require("../z-models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
 const nodemailer = require("nodemailer");
+const e = require("express");
+require("dotenv").config();
 const saltRounds = 12;
 
 exports.loginUser = async (req, res) => {
@@ -56,19 +58,6 @@ exports.registerUser = (req, res) => {
             newUser.password = hash;
             await newUser.save();
 
-            const token = jwt.encode(
-                {
-                    id: newUser._id,
-                    role: newUser.role,
-                    username: newUser.username,
-                    time: new Date().getTime(),
-                },
-                process.env.SECRET
-            );
-            res.cookie("userLoggedIn", token, {
-                maxAge: 9200000,
-                httpOnly: true,
-            });
 
             res.send({ status: "authorized" });
         } catch (e) {
@@ -166,5 +155,20 @@ exports.checkCookie = (req, res) => {
         }
     } catch (e) {
         console.log(e.message)
+    }
+}
+exports.checkAdmin = (req, res) => {
+    const token = req.cookies.userLoggedIn;
+
+    if (token) {
+        const decoded = jwt.decode(token, process.env.SECRET);
+
+        if (decoded.role === 'admin') {
+            res.send({ admin: true })
+        } else {
+            res.send({ admin: false })
+        }
+    } else {
+        res.send({ admin: false })
     }
 }

@@ -1,5 +1,6 @@
 import './dist/hangman.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import HangmanAdmin from './HangmanAdmin'
 import img6 from './img/6.jpeg'
 import img5 from './img/5.jpeg'
 import img4 from './img/4.jpeg'
@@ -15,6 +16,18 @@ const Hangman = () => {
     const [newGame, setNewGameButton] = useState(true)
     const [hiddenWord, setHiddenWord] = useState('')
     const [letters, setLetters] = useState('')
+    const [isAdmin, setAdmin] = useState(false)
+    const [allWords, setAllWords] = useState('')
+
+    useEffect(() => {
+        fetch('/admin')
+            .then(r => r.json())
+            .then(r => {
+                if (r.admin === true) {
+                    setAdmin(true)
+                }
+            })
+    }, [])
 
     return (
         <div className="wrapper">
@@ -38,32 +51,37 @@ const Hangman = () => {
                 </div>
             </div>
 
+            {isAdmin ?
+                <HangmanAdmin allWords={allWords} setAllWords={setAllWords} />
+                :
+                null
+            }
         </div>
     )
 }
 
-const words = ["helo", "work pls", "testing", "helo twice", "yelo"]
 const lettersArray = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"]
-
-let chosenWordArray = []
 let strikes = 6
 let counter = 0
-let chosenWord
 
-function handleNewGame(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters) {
-    renderLetters(setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg)
-    const random = Math.floor(Math.random() * words.length);
-    chosenWord = words[random]
+const getRandomWord = async () => {
+    let randomWord = ''
+    await fetch("/games/hangman")
+        .then(r => r.json())
+        .then(data => (
+            randomWord = data.randomWord.word
+        ))
+    return randomWord
+}
+async function handleNewGame(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters) {
+    const chosenWord = await getRandomWord()
 
     strikes = 6
     setStrikesDom(`You have ${strikes} strikes left.`)
-    console.log(imgs[strikes])
     setHangmanImg(imgs[strikes])
-
-    let html = ""
-    console.log(chosenWord)
     setNewGameButton(false)
-    chosenWordArray = []
+    let html = ""
+    let chosenWordArray = []
 
     for (let i = 0; i < chosenWord.length; i++) {
         if (chosenWord.charAt(i) != " ") {
@@ -77,18 +95,18 @@ function handleNewGame(setStrikesDom, setHangmanImg, setNewGameButton, setHidden
     })
 
     setHiddenWord(html)
-    console.log(chosenWordArray)
+    renderLetters(setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray)
 }
 
-const renderLetters = (setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg) => {
+const renderLetters = (setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray) => {
     console.log('RENDER LETTER')
     const lettersMap = lettersArray.map(letter => {
-        return (<button id="buttonLetter" key={letter} data-letter={letter} onClick={handleLetterClick(setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg)} style={{ gridArea: letter }}>{letter}</button >)
+        return (<button id="buttonLetter" key={letter} data-letter={letter} onClick={handleLetterClick(setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray)} style={{ gridArea: letter }}>{letter}</button >)
     })
     setLetters(lettersMap)
 }
 
-const handleLetterClick = (setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg) => e => {
+const handleLetterClick = (setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray) => e => {
     const clickedLetter = e.target.dataset.letter
     console.log(clickedLetter)
     const regLetter = new RegExp(clickedLetter, 'gi')

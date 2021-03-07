@@ -90,7 +90,7 @@ const handleRegister = (setLoggedIn, setTaken, setWeekPassword, setBadInput, set
         setEnterUsername(false)
         setUsernameColor('1px solid black')
     }
-    else if (!password1 || password2) {
+    else if (!password1 || !password2) {
         setEnterPassword(true)
         setPasswordColor('1px solid red')
 
@@ -130,7 +130,8 @@ const handleRegister = (setLoggedIn, setTaken, setWeekPassword, setBadInput, set
                             buttons: false,
                             timer: 1500,
                         });
-                        setLoggedIn(true)
+                        window.location.href = "/"
+                        setLoggedIn(false)
                     } else {
                         setLoadingCircle(false)
                         setTaken(true)

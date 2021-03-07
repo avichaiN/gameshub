@@ -15,6 +15,8 @@ mongoose.connect(`${process.env.DATABASE_URL}`, {
 
 //Routes
 const authRoute = require("./z-routers/authRoute");
+const gamesRoute = require("./z-routers/gamesRoute");
+
 
 const port = process.env.PORT || 4000;
 const app = express();
@@ -22,7 +24,10 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 app.use("/", authRoute);
+
+app.use("/games", gamesRoute)
 
 app.use(express.static(path.join(__dirname, '.', 'client', 'build')));
 

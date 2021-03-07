@@ -68,6 +68,7 @@ const handleLogin = (setLoggedIn, setBadLogin, setEnterUsername, setEnterPasswor
                 .then((res) => res.json())
                 .then(async (data) => {
                     if (data.status === 'authorized') {
+                        setLoadingCircle(false)
                         await swal({
                             title: "Login successfully",
                             text: 'Welcome',
@@ -75,7 +76,6 @@ const handleLogin = (setLoggedIn, setBadLogin, setEnterUsername, setEnterPasswor
                             buttons: false,
                             timer: 1500,
                         });
-                        setLoadingCircle(false)
                         setLoggedIn(true)
                     } else {
                         setLoadingCircle(false)

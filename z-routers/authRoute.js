@@ -12,6 +12,10 @@ router
     .post(authController.registerUser)
 
 router
+    .route("/admin")
+    .get(authController.checkAdmin)
+
+router
     .route("/guest")
     .get(authController.loginAsGuest)
 
