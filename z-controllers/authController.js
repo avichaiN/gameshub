@@ -43,12 +43,12 @@ exports.loginUser = async (req, res) => {
 exports.registerUser = (req, res) => {
     console.log(req.body)
 
-    const { username, email, password } = req.body;
+    const { username, email, password1 } = req.body;
 
     const newUser = new User({
         email: email,
         username: username,
-        password: password,
+        password: password1,
     });
 
     bcrypt.hash(newUser.password, saltRounds, async function (err, hash) {
