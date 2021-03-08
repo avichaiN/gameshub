@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Hangman = require("./Hangman");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
@@ -21,6 +22,14 @@ const UserSchema = new Schema(
         role: {
             type: String,
             default: "public",
+        },
+        hangmanL: {
+            type: Number,
+            default: 0
+        },
+        hangmanW: {
+            type: Number,
+            default: 0
         },
     },
     {

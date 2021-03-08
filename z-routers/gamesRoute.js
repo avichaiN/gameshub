@@ -9,6 +9,8 @@ router
     .route("/hangman")
     .get(hangmanController.getRandomWord)
     .post(checkAdmin, hangmanController.addWord)
+    .put(hangmanController.saveScore)
+    .delete(checkAdmin, hangmanController.deleteWord)
 
 router
     .route("/hangman/allwords")

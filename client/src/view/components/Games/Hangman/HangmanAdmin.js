@@ -49,15 +49,29 @@ const addWord = (setAllWords) => e => {
 
         })
 }
+
 const getAllWords = (setAllWords) => {
     fetch("/games/hangman/allwords")
         .then((res) => res.json())
         .then((data) => {
             const hangmanWords = data.hangmanWords.map(word => {
-                console.log(word.word)
-                return (<p key={word.word}>{word.word}</p>)
+                return (<p key={word.word}>{word.word} <button onClick={() => removeWord(word._id, setAllWords)}>Remove</button></p>)
             })
             setAllWords(hangmanWords)
+        })
+}
+const removeWord = (wordId, setAllWords) => {
+
+    fetch("/games/hangman", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ wordId }),
+    })
+        .then((res) => res.json())
+        .then(async (data) => {
+            getAllWords(setAllWords)
         })
 }
 export default HangmanAdmin

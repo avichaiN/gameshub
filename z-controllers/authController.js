@@ -2,7 +2,6 @@ const User = require("../z-models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
 const nodemailer = require("nodemailer");
-const e = require("express");
 require("dotenv").config();
 const saltRounds = 12;
 
@@ -157,7 +156,7 @@ exports.checkCookie = (req, res) => {
         console.log(e.message)
     }
 }
-exports.checkAdmin = (req, res) => {
+exports.checkAuth = (req, res) => {
     const token = req.cookies.userLoggedIn;
 
     if (token) {
@@ -165,6 +164,8 @@ exports.checkAdmin = (req, res) => {
 
         if (decoded.role === 'admin') {
             res.send({ admin: true })
+        } else if (decoded.role === 'public') {
+            res.send({ user: true })
         } else {
             res.send({ admin: false })
         }

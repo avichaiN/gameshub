@@ -12,8 +12,8 @@ router
     .post(authController.registerUser)
 
 router
-    .route("/admin")
-    .get(authController.checkAdmin)
+    .route("/auth")
+    .get(authController.checkAuth)
 
 router
     .route("/guest")
