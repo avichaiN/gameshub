@@ -162,6 +162,7 @@ const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton
 }
 async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses) {
     setGameOver(false)
+    const hintLetter = []
     const chosenWord = await getRandomWord()
 
     strikes = 6
@@ -169,11 +170,11 @@ async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameBu
     setHangmanImg(imgs[strikes])
     setNewGameButton(false)
 
-    createHiddenWord(setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses)
+    createHiddenWord(setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)
 
 }
 
-const createHiddenWord = (setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses) => {
+const createHiddenWord = (setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => {
     let chosenWordArray = []
 
     for (let i = 0; i < chosenWord.length; i++) {
@@ -190,58 +191,53 @@ const createHiddenWord = (setLetters, setStrikesDom, setNewGameButton, setHangma
     })
 
     setHiddenWord(html)
-    renderLetters(setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses)
+    renderLetters(setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)
 }
 
-const renderLetters = (setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses) => {
+const renderLetters = (setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => {
     const lettersMap = lettersArray.map(letter => {
-        return (<button id="buttonLetter" key={letter} data-letter={letter} onClick={handleLetterClick(setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses)} style={{ gridArea: letter }}>{letter}</button >)
+        return (<button id="buttonLetter" key={letter} data-letter={letter} onClick={handleLetterClick(setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)} style={{ gridArea: letter }}>{letter}</button >)
     })
     setLetters(lettersMap)
 }
 
-const handleLetterClick = (setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses) => e => {
-    checkIfLetterFound(chosenWord, chosenWordArray, e)
+const handleLetterClick = (setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => e => {
+    checkIfLetterFound(chosenWord, chosenWordArray, setHintButton, hintLetter, e)
     updateHiddenWord(chosenWord, chosenWordArray, setHiddenWord, setHintButton)
     updateImg(chosenWordArray, setStrikesDom, setHangmanImg)
     checkLose(strikes, setLetters, setHiddenWord, setStrikesDom, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg)
     checkVictory(chosenWordArray, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg)
 }
-const checkIfLetterFound = (chosenWord, chosenWordArray, e) => {
+const checkIfLetterFound = (chosenWord, chosenWordArray, setHintButton, hintLetter, e) => {
     counter = 0
     const clickedLetter = e.target.dataset.letter
 
-    const regLetter = new RegExp(clickedLetter, 'gi')
+
+    const regLetter = new RegExp(clickedLetter, 'i')
     e.target.style.pointerEvents = "none"
     let foundLetter = false
 
     for (let i = 0; i < chosenWordArray.length; i++) {
 
-        if (regLetter.test(chosenWord.charAt(i))) {
-
+        if (regLetter.test(chosenWord[i])) {
             foundLetter = true
             e.target.style.backgroundColor = "green"
             chosenWordArray.splice(i, 1, `${clickedLetter}`)
         } else if (!foundLetter) {
             e.target.style.backgroundColor = "red"
             counter++
-            // updateImg(chosenWordArray, setStrikesDom, setHangmanImg)
         }
     }
 }
+
 const updateHiddenWord = (chosenWord, chosenWordArray, setHiddenWord, setHintButton) => {
     let html = ""
     chosenWordArray.forEach(letter => {
         html += ` ${letter} `
     })
     setHiddenWord(html)
-    // setHintButton(<button onClick={() => getHint(chosenWord, html)}>Hint</button>)
 }
-// const getHint = (chosenWord, foundLetters) => {
 
-//     console.log(chosenWord)
-//     console.log(foundLetters)
-// }
 const updateImg = (chosenWordArray, setStrikesDom, setHangmanImg) => {
     if (counter == chosenWordArray.length) {
         strikes--
