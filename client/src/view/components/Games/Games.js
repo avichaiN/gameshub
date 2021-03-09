@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import Hangman from './Hangman/Hangman'
+import Simon from './Simon/Simon'
 
 const Games = () => {
     return (
@@ -16,11 +17,16 @@ const Games = () => {
 
                 <div className='games__nav'>
                     <Link className='games__hangman' to="/hangman">Hang-Man</Link>
+                    <Link className='games__hangman' to="/simon">Simon</Link>
+
                 </div>
 
                 <Switch>
                     <Route path="/hangman">
                         <Hangman />
+                    </Route>
+                    <Route path="/simon">
+                        <Simon />
                     </Route>
 
                 </Switch>

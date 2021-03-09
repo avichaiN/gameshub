@@ -46,7 +46,7 @@ const Hangman = () => {
             {newGame ?
                 <div>
                     < button id="newGame" onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer.(Extra points)</button>
-                    < button id="newGame" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses)}>Start Game with unlimated time.</button>
+                    < button id="newGame" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime)}>Start Game with unlimated time.</button>
                 </div>
                 :
                 null
@@ -107,6 +107,7 @@ const Hangman = () => {
 const lettersArray = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"]
 let strikes = 6
 let counter = 0
+let timerInterval
 
 const getRandomWord = async () => {
     let randomWord = ''
@@ -120,7 +121,7 @@ const getRandomWord = async () => {
 }
 const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, timer, setTimer) => {
     setGameOver(false)
-
+    setTimer('')
     const chosenWord = await getRandomWord()
     setOnTime(true)
 
@@ -129,7 +130,8 @@ const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton
 
     function startTimer(duration, setTimer) {
         let timer = duration, minutes, seconds;
-        const timerInterval = setInterval(async () => {
+        timerInterval = setInterval(async () => {
+
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
 
@@ -160,7 +162,8 @@ const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton
     setNewGameButton(false)
     createHiddenWord(setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses)
 }
-async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses) {
+async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime) {
+    setOnTime(false)
     setGameOver(false)
     const hintLetter = []
     const chosenWord = await getRandomWord()
@@ -247,27 +250,10 @@ const updateImg = (chosenWordArray, setStrikesDom, setHangmanImg) => {
         counter = 0
     }
 }
-const saveScore = async (winlose, setVictorys, setLoses) => {
-    await fetch("/games/hangman", {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ winlose }),
-    })
-        .then((res) => res.json())
-        .then(async (data) => {
-            if (data.addedScore === true) {
-                setVictorys(data.newWinScore)
-                setLoses(data.newLoseScore)
-            } else {
-                setVictorys('NULL')
-                setLoses('NULL')
-            }
-        })
-}
+
 const checkLose = async (strikes, setLetters, setHiddenWord, setStrikesDom, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg) => {
     if (strikes == 0) {
+        clearInterval(timerInterval);
         setFinish('You lost!')
         setGameOver(true)
         setLetters('')
@@ -286,6 +272,7 @@ const checkVictory = async (chosenWordArray, setLetters, setStrikesDom, setHidde
         }
     })
     if (victoryCondition == 0) {
+        clearInterval(timerInterval);
         setGameOver(true)
         setFinish('Victory!')
         setLetters('')
@@ -295,5 +282,24 @@ const checkVictory = async (chosenWordArray, setLetters, setStrikesDom, setHidde
         setNewGameButton(true)
         await saveScore('win', setVictorys, setLoses)
     }
+}
+const saveScore = async (winlose, setVictorys, setLoses) => {
+    await fetch("/games/hangman", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ winlose }),
+    })
+        .then((res) => res.json())
+        .then(async (data) => {
+            if (data.addedScore === true) {
+                setVictorys(data.newWinScore)
+                setLoses(data.newLoseScore)
+            } else {
+                setVictorys('NULL')
+                setLoses('NULL')
+            }
+        })
 }
 export default Hangman
