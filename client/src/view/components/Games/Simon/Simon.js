@@ -14,7 +14,7 @@ const Simon = () => {
     return (<div className='simon__container'>
         <h2 className='simon__title'>Simon</h2>
 
-        {!game ? <button onClick={() => StartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start'>Start</button>
+        {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start'>Start</button>
             : null}
         <div className='simon_boxes'>
             <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow')} className='boxes_box yellow'>1</div>
@@ -24,25 +24,30 @@ const Simon = () => {
         </div>
     </div>)
 }
-const combination = []
+let combination = []
 let clickNum = 0
 let playerTurn = false
 
-const StartSimon = (setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
-    console.log('started round')
+const handleStartSimon = (setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
+    console.log('start game')
     setGame(true)
+    combination = []
+    startSimon(colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)
+}
+const startSimon = (colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
+    console.log('started round')
 
     let i = 0
     const gameInterval = setInterval(() => {
         i++
-        playGame(i)
+        startFlashingBoxes(i)
         if (i > combination.length) {
             clearInterval(gameInterval)
             // playersTurn(combination)
         }
     }, 600);
 
-    const playGame = (i) => {
+    const startFlashingBoxes = (i) => {
         displayCombination(i)
     }
     const displayCombination = (i) => {
@@ -120,7 +125,5 @@ const playersTurn = (colorClicked) => {
     } else {
         console.log('NOT UR TURN')
     }
-
-
 }
 export default Simon
