@@ -1,13 +1,19 @@
 import './dist/simon.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+
 
 const Simon = () => {
-
+    const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
+    const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
+    const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3')
+    const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
+    const buzz = new Audio('https://cdn.rawgit.com/Cu7ious/React.js-based-Simon-Game/master/assets/sounds/buzz.mp3')
+    const trumpet = new Audio('https://cdn.rawgit.com/Cu7ious/React.js-based-Simon-Game/master/assets/sounds/trumpet.mp3')
+    
     const [yellowOpacity, setYellowOpacity] = useState(0.1)
     const [blueOpacity, setBlueOpacity] = useState(0.1)
     const [redOpacity, setRedOpacity] = useState(0.1)
     const [greenOpacity, setGreenOpacity] = useState(0.1)
-
     const [colors, setColors] = useState(['yellow', 'blue', 'red', 'green'])
     const [game, setGame] = useState(false)
 
