@@ -5,10 +5,11 @@ const jwt = require("jwt-simple");
 
 
 exports.getRandomWord = async (req, res) => {
+    console.log('here')
     const hangmanWords = await Hangman.find({}).exec()
-
-    const randomWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)];
-    res.send({ randomWord })
+    // console.log(hangmanWords)
+    // const randomWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)];
+    res.send({ hangmanWords })
     // const newWord = new Hangman({
     //     word: 'random word'
     // });

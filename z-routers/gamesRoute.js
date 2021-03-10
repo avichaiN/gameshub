@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const hangmanController = require("../z-controllers/hangmanController")
+const simonController = require("../z-controllers/simonController")
 const checkAdmin = require("../z-controllers/checkAdmin");
 
 
@@ -15,5 +16,13 @@ router
 router
     .route("/hangman/allwords")
     .get(checkAdmin, hangmanController.allWords)
+
+router
+    .route("/simon/save")
+    .post(simonController.save)
+
+router
+    .route("/simon/geths")
+    .get(simonController.highScore)
 
 module.exports = router

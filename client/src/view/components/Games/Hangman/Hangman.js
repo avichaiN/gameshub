@@ -9,7 +9,7 @@ import img2 from './img/2.png'
 import img1 from './img/1.png'
 import img0 from './img/0.png'
 const imgs = [img0, img1, img2, img3, img4, img5, img6]
-
+let hangmanWords
 const Hangman = () => {
     const [finishMsg, setFinish] = useState('')
     const [onTime, setOnTime] = useState(false)
@@ -39,7 +39,13 @@ const Hangman = () => {
                 }
             })
     }, [])
-
+    useEffect(() => {
+        fetch("/games/hangman")
+            .then(r => r.json())
+            .then(data => (
+                hangmanWords = data.hangmanWords
+            ))
+    }, [])
     return (
         <div className="wrapper">
 
@@ -109,20 +115,22 @@ let strikes = 6
 let counter = 0
 let timerInterval
 
-const getRandomWord = async () => {
-    let randomWord = ''
-    await fetch("/games/hangman")
-        .then(r => r.json())
-        .then(data => (
-            randomWord = data.randomWord.word
-        ))
-
-    return randomWord
-}
+// const getRandomWord = async () => {
+//     console.log('top')
+//     let randomWord = ''
+//     await fetch("/games/hangman")
+//         .then(r => r.json())
+//         .then(data => (
+//             randomWord = data.randomWord.word
+//         ))
+//     console.log('bottom')
+//     return randomWord
+// }
 const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, timer, setTimer) => {
+    console.log('timer new game')
     setGameOver(false)
     setTimer('')
-    const chosenWord = await getRandomWord()
+    const chosenWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)].word
     setOnTime(true)
 
     let twoMinutes = 60 * 2
@@ -166,7 +174,7 @@ async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameBu
     setOnTime(false)
     setGameOver(false)
     const hintLetter = []
-    const chosenWord = await getRandomWord()
+    const chosenWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)].word
 
     strikes = 6
     setStrikesDom(`You have ${strikes} strikes left.`)

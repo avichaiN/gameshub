@@ -1,5 +1,14 @@
 import './dist/simon.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
+const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
+const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3')
+const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
+const buzz = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
+const trumpet = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
+let combination = []
+let clickNum = 0
 
 
 const Simon = () => {
@@ -8,152 +17,188 @@ const Simon = () => {
     const [blueOpacity, setBlueOpacity] = useState(0.1)
     const [redOpacity, setRedOpacity] = useState(0.1)
     const [greenOpacity, setGreenOpacity] = useState(0.1)
-
+    const [sound, setSound] = useState(true)
+    const [score, setScore] = useState(0)
     const [colors, setColors] = useState(['yellow', 'blue', 'red', 'green'])
     const [game, setGame] = useState(false)
+    const [userLoggedIn, setLoggedIn] = useState(false)
+    const [highscore, setHighScore] = useState(0)
+    const [playerTurn, setPlayerTurn] = useState(false)
 
+    useEffect(() => {
+        fetch('/checkCookie')
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'authorized') {
+                    setLoggedIn(true)
+                }
+            })
+        fetch('/games/simon/geths')
+            .then(r => r.json())
+            .then(data => {
+                console.log('dasdsa')
+                console.log(data)
+                setHighScore(data.simonHighScore)
+            })
+    }, [])
+
+    const handleStartSimon = () => {
+        // console.log('start game')
+        combination = []
+        clickNum = 0
+        setScore(0)
+        setGame(true)
+        startSimonRound()
+    }
+    const startSimonRound = () => {
+
+        let i = 0
+        const gameInterval = setInterval(() => {
+            i++
+            displayCombination(i)
+            setPlayerTurn(false)
+            if (i > combination.length) {
+                clearInterval(gameInterval)
+            }
+        }, 600);
+
+    }
+    const displayCombination = (i) => {
+
+        if (i > combination.length) {
+            addRandomColor()
+        } else {
+            flashBoxSequence(i)
+        }
+    }
+    const addRandomColor = () => {
+        const random = Math.floor(Math.random() * 4)
+        const chosenColor = colors[random]
+        flashBoxPlayerRandom(chosenColor)
+
+        setTimeout(() => {
+            combination.push(chosenColor)
+            setPlayerTurn(true)
+        }, 250);
+    }
+    const flashBoxSequence = (i) => {
+        if (combination[i - 1] == 'yellow') {
+            if (sound) tone1.play()
+            setYellowOpacity(1)
+        } else if (combination[i - 1] == 'blue') {
+            if (sound) tone2.play()
+            setBlueOpacity(1)
+        } else if (combination[i - 1] == 'red') {
+            if (sound) tone3.play()
+            setRedOpacity(1)
+        } else if (combination[i - 1] == 'green') {
+            if (sound) tone4.play()
+            setGreenOpacity(1)
+        } else {
+        }
+        setTimeout(() => {
+            if (combination[i - 1] == 'yellow') {
+                setYellowOpacity(0.1)
+            } else if (combination[i - 1] == 'blue') {
+                setBlueOpacity(0.1)
+            } else if (combination[i - 1] == 'red') {
+                setRedOpacity(0.1)
+            } else if (combination[i - 1] == 'green') {
+                setGreenOpacity(0.1)
+            } else {
+            }
+        }, 250);
+    }
+    const flashBoxPlayerRandom = (color) => {
+        if (color == 'yellow') {
+            if (sound) tone1.play()
+            setYellowOpacity(1)
+        } else if (color == 'blue') {
+            if (sound) tone2.play()
+            setBlueOpacity(1)
+        } else if (color == 'red') {
+            if (sound) tone3.play()
+            setRedOpacity(1)
+        } else if (color == 'green') {
+            if (sound) tone4.play()
+            setGreenOpacity(1)
+        }
+        setTimeout(() => {
+            if (color == 'yellow') {
+                setYellowOpacity(0.1)
+            } else if (color == 'blue') {
+                setBlueOpacity(0.1)
+            } else if (color == 'red') {
+                setRedOpacity(0.1)
+            } else if (color == 'green') {
+                setGreenOpacity(0.1)
+            }
+        }, 250);
+    }
+    const playersTurn = (colorClicked) => {
+
+        if (playerTurn) {
+            flashBoxPlayerRandom(colorClicked)
+            if (combination[clickNum] == colorClicked) {
+                if (combination.length - 1 === clickNum) {
+                    if (userLoggedIn && combination.length > highscore) {
+                        setHighScore(combination.length - 1)
+                        console.log('NEW HIGHSCORE')
+                    } else if (!userLoggedIn && combination.length > highscore) {
+                        setHighScore(combination.length)
+                    }
+                    if (sound) trumpet.play()
+                    setPlayerTurn(false)
+                    clickNum = 0
+                    setScore(combination.length)
+                    setTimeout(() => {
+                        startSimonRound()
+                    }, 1000);
+                } else {
+                    clickNum++
+                }
+            } else {
+                if (userLoggedIn && combination.length - 1 > highscore) {
+                    saveGame(combination.length - 1)
+                    setHighScore(combination.length - 1)
+                }
+                if (sound) trumpet.play()
+                setPlayerTurn(false)
+                setGame(false)
+                combination = []
+            }
+        }
+    }
+    const saveGame = (highscore) => {
+        fetch("/games/simon/save", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ highscore }),
+        })
+    }
     return (<div className='simon__container'>
         <h2 className='simon__title'>Simon</h2>
 
         {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start'>Start</button>
-            : null}
+            : <button onClick={() => setGame(false)} className='simon__stop'>Reset</button>}
+
+        {game ? <div>{playerTurn ? <div><p>Your Turn</p><h2>Current score: {score}</h2></div> : <div><p>Pay Atenttion</p>
+            <h2>Current score: {score}</h2></div>}</div> : null}
+
+        {userLoggedIn ? <div>Your highscore- {highscore}</div> : <div>Your highscore- {highscore}</div>}
+        {sound ? <button onClick={() => setSound(!sound)}>sound on</button>
+            : <button onClick={() => setSound(!sound)}>sound off</button>
+        }
         <div className='simon_boxes'>
-            <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow', setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='boxes_box yellow'>1</div>
-            <div style={{ opacity: blueOpacity }} onClick={() => playersTurn('blue', setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='boxes_box blue'>2</div>
-            <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red', setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='boxes_box red'>3</div>
-            <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green', setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='boxes_box green'>4</div>
+            <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow')} className='boxes_box yellow'>1</div>
+            <div style={{ opacity: blueOpacity }} onClick={() => playersTurn('blue')} className='boxes_box blue'>2</div>
+            <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red')} className='boxes_box red'>3</div>
+            <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green')} className='boxes_box green'>4</div>
         </div>
     </div>)
 }
-const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
-const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
-const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3')
-const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
-const buzz = new Audio('https://cdn.rawgit.com/Cu7ious/React.js-based-Simon-Game/master/assets/sounds/buzz.mp3')
-const trumpet = new Audio('./audio/cherring.mp3')
-let combination = []
-let clickNum = 0
-let playerTurn = false
 
-const handleStartSimon = (setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
-    // console.log('start game')
-    combination = []
-    clickNum = 0
-    setGame(true)
-    startSimonRound(colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)
-}
-const startSimonRound = (colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
-    // console.log('started round')
-    // console.log(combination)
-    let i = 0
-    const gameInterval = setInterval(() => {
-        i++
-        displayCombination(i, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity, colors)
-        playerTurn = false
-        if (i > combination.length) {
-            clearInterval(gameInterval)
-            // playersTurn(combination)
-        }
-    }, 600);
 
-}
-const displayCombination = (i, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity, colors) => {
-
-    if (i > combination.length) {
-        addRandomColor(setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity, colors)
-    } else {
-        flashBoxSequence(setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity, i)
-    }
-}
-const addRandomColor = (setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity, colors) => {
-    const random = Math.floor(Math.random() * 4)
-    const chosenColor = colors[random]
-    flashBoxPlayerRandom(chosenColor, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)
-
-    setTimeout(() => {
-        combination.push(chosenColor)
-        playerTurn = true
-    }, 250);
-}
-const flashBoxSequence = (setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity, i) => {
-    if (combination[i - 1] == 'yellow') {
-        tone1.play()
-        setYellowOpacity(1)
-    } else if (combination[i - 1] == 'blue') {
-        tone2.play()
-        setBlueOpacity(1)
-    } else if (combination[i - 1] == 'red') {
-        tone3.play()
-        setRedOpacity(1)
-    } else if (combination[i - 1] == 'green') {
-        tone4.play()
-        setGreenOpacity(1)
-    } else {
-    }
-    setTimeout(() => {
-        if (combination[i - 1] == 'yellow') {
-            setYellowOpacity(0.1)
-        } else if (combination[i - 1] == 'blue') {
-            setBlueOpacity(0.1)
-        } else if (combination[i - 1] == 'red') {
-            setRedOpacity(0.1)
-        } else if (combination[i - 1] == 'green') {
-            setGreenOpacity(0.1)
-        } else {
-        }
-    }, 400);
-}
-const flashBoxPlayerRandom = (color, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
-    if (color == 'yellow') {
-        tone1.play()
-        setYellowOpacity(1)
-    } else if (color == 'blue') {
-        tone2.play()
-        setBlueOpacity(1)
-    } else if (color == 'red') {
-        tone3.play()
-        setRedOpacity(1)
-    } else if (color == 'green') {
-        tone4.play()
-        setGreenOpacity(1)
-    }
-    setTimeout(() => {
-        if (color == 'yellow') {
-            setYellowOpacity(0.1)
-        } else if (color == 'blue') {
-            setBlueOpacity(0.1)
-        } else if (color == 'red') {
-            setRedOpacity(0.1)
-        } else if (color == 'green') {
-            setGreenOpacity(0.1)
-        }
-    }, 250);
-}
-const playersTurn = (colorClicked, setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity) => {
-
-    if (playerTurn) {
-        flashBoxPlayerRandom(colorClicked, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)
-        if (combination[clickNum] == colorClicked) {
-            if (combination.length - 1 === clickNum) {
-                trumpet.play()
-                playerTurn = false
-                clickNum = 0
-                setTimeout(() => {
-                    startSimonRound(colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)
-
-                }, 1000);
-            } else {
-                clickNum++
-            }
-        } else {
-            trumpet.play()
-            console.log('game over')
-            playerTurn = false
-            setGame(false)
-            combination = []
-        }
-    } else {
-        console.log('not ur turn')
-    }
-}
 export default Simon
