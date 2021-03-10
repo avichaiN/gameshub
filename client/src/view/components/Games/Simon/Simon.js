@@ -1,5 +1,9 @@
 import './dist/simon.css';
+import Icon from '@mdi/react'
+import { mdiVolumeOff } from '@mdi/js';
+import { mdiVolumeHigh } from '@mdi/js';
 import React, { useState, useEffect } from 'react';
+
 
 const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
 const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
@@ -24,6 +28,8 @@ const Simon = () => {
     const [userLoggedIn, setLoggedIn] = useState(false)
     const [highscore, setHighScore] = useState(0)
     const [playerTurn, setPlayerTurn] = useState(false)
+    const [firstGame, setFirstGame] = useState(false)
+
 
     useEffect(() => {
         fetch('/checkCookie')
@@ -40,6 +46,9 @@ const Simon = () => {
                 console.log(data)
                 setHighScore(data.simonHighScore)
             })
+        if (highscore === 0) {
+            setFirstGame(true)
+        }
     }, [])
 
     const handleStartSimon = () => {
@@ -81,57 +90,83 @@ const Simon = () => {
             setPlayerTurn(true)
         }, 250);
     }
+    const playAudio = (audio) => {
+        if (sound) {
+            audio.pause()
+            audio.currentTime = 0
+            audio.play()
+        }
+    }
     const flashBoxSequence = (i) => {
-        if (combination[i - 1] == 'yellow') {
-            if (sound) tone1.play()
-            setYellowOpacity(1)
-        } else if (combination[i - 1] == 'blue') {
-            if (sound) tone2.play()
-            setBlueOpacity(1)
-        } else if (combination[i - 1] == 'red') {
-            if (sound) tone3.play()
-            setRedOpacity(1)
-        } else if (combination[i - 1] == 'green') {
-            if (sound) tone4.play()
-            setGreenOpacity(1)
-        } else {
+        switch (combination[i - 1]) {
+            case 'yellow':
+                playAudio(tone1)
+                setYellowOpacity(0.8)
+                break;
+            case 'blue':
+                playAudio(tone2)
+                setBlueOpacity(0.8)
+                break;
+            case 'green':
+                playAudio(tone3)
+                setGreenOpacity(0.8)
+                break;
+            case 'red':
+                playAudio(tone4)
+                setRedOpacity(0.8)
+                break;
         }
         setTimeout(() => {
-            if (combination[i - 1] == 'yellow') {
-                setYellowOpacity(0.1)
-            } else if (combination[i - 1] == 'blue') {
-                setBlueOpacity(0.1)
-            } else if (combination[i - 1] == 'red') {
-                setRedOpacity(0.1)
-            } else if (combination[i - 1] == 'green') {
-                setGreenOpacity(0.1)
-            } else {
+            switch (combination[i - 1]) {
+                case 'yellow':
+                    setYellowOpacity(0.1)
+                    break;
+                case 'blue':
+                    setBlueOpacity(0.1)
+                    break;
+                case 'green':
+                    setGreenOpacity(0.1)
+                    break;
+                case 'red':
+                    setRedOpacity(0.1)
+                    break;
             }
         }, 250);
     }
     const flashBoxPlayerRandom = (color) => {
-        if (color == 'yellow') {
-            if (sound) tone1.play()
-            setYellowOpacity(1)
-        } else if (color == 'blue') {
-            if (sound) tone2.play()
-            setBlueOpacity(1)
-        } else if (color == 'red') {
-            if (sound) tone3.play()
-            setRedOpacity(1)
-        } else if (color == 'green') {
-            if (sound) tone4.play()
-            setGreenOpacity(1)
+
+        switch (color) {
+            case 'yellow':
+                playAudio(tone1)
+                setYellowOpacity(0.8)
+                break;
+            case 'blue':
+                playAudio(tone2)
+                setBlueOpacity(0.8)
+                break;
+            case 'green':
+                playAudio(tone3)
+                setGreenOpacity(0.8)
+                break;
+            case 'red':
+                playAudio(tone4)
+                setRedOpacity(0.8)
+                break;
         }
         setTimeout(() => {
-            if (color == 'yellow') {
-                setYellowOpacity(0.1)
-            } else if (color == 'blue') {
-                setBlueOpacity(0.1)
-            } else if (color == 'red') {
-                setRedOpacity(0.1)
-            } else if (color == 'green') {
-                setGreenOpacity(0.1)
+            switch (color) {
+                case 'yellow':
+                    setYellowOpacity(0.1)
+                    break;
+                case 'blue':
+                    setBlueOpacity(0.1)
+                    break;
+                case 'green':
+                    setGreenOpacity(0.1)
+                    break;
+                case 'red':
+                    setRedOpacity(0.1)
+                    break;
             }
         }, 250);
     }
@@ -150,6 +185,7 @@ const Simon = () => {
                     if (sound) trumpet.play()
                     setPlayerTurn(false)
                     clickNum = 0
+                    setFirstGame(false)
                     setScore(combination.length)
                     setTimeout(() => {
                         startSimonRound()
@@ -178,26 +214,47 @@ const Simon = () => {
             body: JSON.stringify({ highscore }),
         })
     }
-    return (<div className='simon__container'>
-        <h2 className='simon__title'>Simon</h2>
+    return (<div className='simon__container container-sm'>
+        <div className='simon__topHalf'>
 
-        {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start'>Start</button>
-            : <button onClick={() => setGame(false)} className='simon__stop'>Reset</button>}
+            <div className='simon_settings'>
+                <div className='simon__titleBox'>
+                    <h2 className='simon__title'>Simon</h2>
+                    {sound ? <Icon path={mdiVolumeHigh} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
+                        : <Icon path={mdiVolumeOff} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
+                    }
+                </div>
+                <div className='simon__buttons'>
+                    {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start btn btn-primary'>Start</button>
+                        : <button onClick={() => setGame(false)} className='simon__stop btn btn-danger'>Reset</button>}
+                    <button className='btn btn-primary simon_leaderboard'>Leaderboard</button>
+                </div>
 
-        {game ? <div>{playerTurn ? <div><p>Your Turn</p><h2>Current score: {score}</h2></div> : <div><p>Pay Atenttion</p>
-            <h2>Current score: {score}</h2></div>}</div> : null}
+            </div>
 
-        {userLoggedIn ? <div>Your highscore- {highscore}</div> : <div>Your highscore- {highscore}</div>}
-        {sound ? <button onClick={() => setSound(!sound)}>sound on</button>
-            : <button onClick={() => setSound(!sound)}>sound off</button>
-        }
-        <div className='simon_boxes'>
-            <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow')} className='boxes_box yellow'>1</div>
-            <div style={{ opacity: blueOpacity }} onClick={() => playersTurn('blue')} className='boxes_box blue'>2</div>
-            <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red')} className='boxes_box red'>3</div>
-            <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green')} className='boxes_box green'>4</div>
+            <div className='simon__gameInfo'>
+                <h2>Stats</h2>
+                {game ? <div className='gameinfo1'><div className='gameinfo2'><h2>Current score: {score}</h2></div> </div> : null}
+
+                {!firstGame ? <div> {userLoggedIn ? <div className='simon__highscore'>Highscore:{highscore}</div> : <div className='simon__highscore'>Highscore: {highscore}</div>}</div> : null}
+
+            </div>
+
         </div>
-    </div>)
+        <div className='simon__turn'>
+            {game ? <div className='simon__turnText'>{playerTurn ? <h2>Your turn</h2> : <h2>Pay attention</h2>}</div> : null}
+        </div>
+
+        <div className='simon__boxesContainer'>
+            <div className='simon_boxes'>
+                <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow')} className='boxes_box yellow'></div>
+                <div style={{ opacity: blueOpacity }} onClick={() => playersTurn('blue')} className='boxes_box blue'></div>
+                <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red')} className='boxes_box red'></div>
+                <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green')} className='boxes_box green'></div>
+
+            </div></div>
+    </div>
+    )
 }
 
 

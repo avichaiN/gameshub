@@ -1,75 +1,162 @@
 .simon__container {
-    width: 75%;
-    height: 100vh;
+    border-radius: 2%;
     margin: 3% auto;
+    height: 90vh;
+    display: grid;
+    grid-template-rows: 0.2fr 0.01fr 1fr;
+    grid-gap: 1%;
     border: 1px solid black;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
 
-    .simon__title {
-        text-align: center;
-    }
-
-    .simon__start {
-        display: block;
-        text-align: center;
-        padding: 1% 3%;
-        background-color: #4caf50;
-        color: white;
-        border-radius: 0.6em;
-        border: 1px solid lightgray;
-        margin: 1% auto;
-        outline: 0;
-        cursor: pointer;
-    }
-
-    .simon__stop {
-        display: block;
-        text-align: center;
-        padding: 1% 3%;
-        background-color: red;
-        color: white;
-        border-radius: 0.6em;
-        border: 1px solid lightgray;
-        margin: 1% auto;
-        outline: 0;
-        cursor: pointer;
-    }
-
-    .simon_boxes {
+    .simon__topHalf {
+        width: 95%;
+        margin: auto;
+        border: 1px solid black;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-gap: 2%;
-        width: 90%;
-        margin: auto;
-        height: 50%;
-        justify-items: center;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        margin-top: 1%;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 
+        .simon_settings {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid black;
 
-        .boxes_box {
+            .simon__titleBox {
+                display: flex;
+                flex-direction: row-reverse;
+            }
+
+            .simon__buttons {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                margin-left: 13%;
+                .simon_leaderboard {
+                    align-self: center;
+                    justify-self: center;
+                }
+            }
+        }
+
+        .simon__title {
             width: 100%;
-            border: 1px solid black;
-            border-radius: 5%;
-            padding: 4px;
-            background: black;
-            display: inline-block;
             text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
         }
 
-        .yellow {
-            background-color: yellow;
+        .simon__gameInfo {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            border-left: 1px solid black;
+
+
         }
 
-        .red {
-            background-color: red;
+        .simon__start {
+            margin: 5px;
+            cursor: pointer;
         }
 
-        .blue {
-            background-color: blue;
+        .simon__stop {
+            margin: 5px;
+            cursor: pointer;
         }
 
-        .green {
-            background-color: green;
+        .simon__soundToggle {
+            float: right;
+
+            grid-area: sound;
+            cursor: pointer;
+        }
+    }
+
+    .simon__turn {
+        width: 95%;
+        margin: auto;
+        border: 1px solid lightgray;
+        display: flex;
+        justify-content: center;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    }
+
+    .simon__boxesContainer {
+        width: 95%;
+        margin: 0 auto;
+        border: 1px solid lightgray;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+
+
+        .simon_boxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            ;
+            grid-gap: 0.9%;
+            width: 70%;
+            height: 95%;
+            margin: auto;
+            justify-items: center;
+
+
+            .boxes_box {
+                border-radius: 5%;
+                border: 1px solid lightgray;
+                width: 100%;
+                height: 100%;
+                box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+            }
+
+            .yellow {
+                background-color: yellow;
+            }
+
+            .red {
+                background-color: red;
+            }
+
+            .blue {
+                background-color: blue;
+            }
+
+            .green {
+                background-color: green;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 744px) {
+    .simon__container {
+        .simon__topHalf {}
+
+        .simon__gameInfo {
+            .gameinfo1 {
+                .gameinfo2 {
+                    h2 {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+
+        .simon__boxesContainer {
+            .simon_boxes {
+                width: 80%;
+                height: 60%;
+                grid-gap: 1%;
+                margin: 3% auto;
+
+                .boxes_box {
+                    height: 100%;
+                    width: 100%;
+                }
+            }
         }
     }
 }
