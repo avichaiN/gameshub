@@ -4,6 +4,9 @@ import { mdiVolumeOff } from '@mdi/js';
 import { mdiVolumeHigh } from '@mdi/js';
 import React, { useState, useEffect } from 'react';
 
+import {
+    Link,
+} from "react-router-dom";
 
 const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
 const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
@@ -15,7 +18,7 @@ let combination = []
 let clickNum = 0
 
 
-const Simon = () => {
+const Simon = ({ setFromWhichGame }) => {
 
     const [yellowOpacity, setYellowOpacity] = useState(0.1)
     const [blueOpacity, setBlueOpacity] = useState(0.1)
@@ -29,6 +32,7 @@ const Simon = () => {
     const [highscore, setHighScore] = useState(0)
     const [playerTurn, setPlayerTurn] = useState(false)
     const [firstGame, setFirstGame] = useState(false)
+    const [gameOver, setGameOver] = useState(false)
 
 
     useEffect(() => {
@@ -58,6 +62,7 @@ const Simon = () => {
         setScore(0)
         setGame(true)
         startSimonRound()
+        setGameOver(false)
     }
     const startSimonRound = () => {
 
@@ -178,7 +183,6 @@ const Simon = () => {
                 if (combination.length - 1 === clickNum) {
                     if (userLoggedIn && combination.length > highscore) {
                         setHighScore(combination.length - 1)
-                        console.log('NEW HIGHSCORE')
                     } else if (!userLoggedIn && combination.length > highscore) {
                         setHighScore(combination.length)
                     }
@@ -199,6 +203,7 @@ const Simon = () => {
                     setHighScore(combination.length - 1)
                 }
                 if (sound) trumpet.play()
+                setGameOver(true)
                 setPlayerTurn(false)
                 setGame(false)
                 combination = []
@@ -214,46 +219,48 @@ const Simon = () => {
             body: JSON.stringify({ highscore }),
         })
     }
-    return (<div className='simon__container container-sm'>
-        <div className='simon__topHalf'>
+    return (
+        <div className='simon__container container-sm'>
+            <div className='simon__topHalf'>
 
-            <div className='simon_settings'>
-                <div className='simon__titleBox'>
-                    <h2 className='simon__title'>Simon</h2>
-                    {sound ? <Icon path={mdiVolumeHigh} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
-                        : <Icon path={mdiVolumeOff} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
-                    }
+                <div className='simon_settings'>
+                    <div className='simon__titleBox'>
+                        <h2 className='simon__title'>Simon</h2>
+                        {sound ? <Icon path={mdiVolumeHigh} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
+                            : <Icon path={mdiVolumeOff} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
+                        }
+                    </div>
+                    <div className='simon__buttons'>
+                        {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start btn btn-primary'>Start</button>
+                            : <button onClick={() => setGame(false)} className='simon__stop btn btn-danger'>Reset</button>}
+                        <Link onClick={() => setFromWhichGame('simon')} className='games__leaderboard btn btn-primary simon_leaderboard' to='/leaderboard'>Leaderboard</Link>
+                    </div>
                 </div>
-                <div className='simon__buttons'>
-                    {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start btn btn-primary'>Start</button>
-                        : <button onClick={() => setGame(false)} className='simon__stop btn btn-danger'>Reset</button>}
-                    <button className='btn btn-primary simon_leaderboard'>Leaderboard</button>
+
+                <div className='simon__gameInfo'>
+                    <h2>Stats</h2>
+                    {game ? <div className='gameinfo1'><div className='gameinfo2'><h2>Current score: {score}</h2></div> </div> : null}
+
+                    {!firstGame ? <div> {userLoggedIn ? <div className='simon__highscore'>Highscore:{highscore}</div> : <div className='simon__highscore'>Highscore: {highscore}</div>}</div> : null}
+
                 </div>
 
             </div>
-
-            <div className='simon__gameInfo'>
-                <h2>Stats</h2>
-                {game ? <div className='gameinfo1'><div className='gameinfo2'><h2>Current score: {score}</h2></div> </div> : null}
-
-                {!firstGame ? <div> {userLoggedIn ? <div className='simon__highscore'>Highscore:{highscore}</div> : <div className='simon__highscore'>Highscore: {highscore}</div>}</div> : null}
-
+            <div className='simon__turn'>
+                {gameOver ? <h2>Game over</h2> : null}
+                {game ? <div className='simon__turnText'>{playerTurn ? <h2>Your turn</h2> : <h2>Pay attention</h2>}</div> : null}
             </div>
 
-        </div>
-        <div className='simon__turn'>
-            {game ? <div className='simon__turnText'>{playerTurn ? <h2>Your turn</h2> : <h2>Pay attention</h2>}</div> : null}
-        </div>
+            <div className='simon__boxesContainer'>
+                <div className='simon_boxes'>
+                    <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow')} className='boxes_box yellow'></div>
+                    <div style={{ opacity: blueOpacity }} onClick={() => playersTurn('blue')} className='boxes_box blue'></div>
+                    <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red')} className='boxes_box red'></div>
+                    <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green')} className='boxes_box green'></div>
 
-        <div className='simon__boxesContainer'>
-            <div className='simon_boxes'>
-                <div style={{ opacity: yellowOpacity }} onClick={() => playersTurn('yellow')} className='boxes_box yellow'></div>
-                <div style={{ opacity: blueOpacity }} onClick={() => playersTurn('blue')} className='boxes_box blue'></div>
-                <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red')} className='boxes_box red'></div>
-                <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green')} className='boxes_box green'></div>
+                </div></div>
 
-            </div></div>
-    </div>
+        </div>
     )
 }
 

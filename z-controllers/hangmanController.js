@@ -5,20 +5,12 @@ const jwt = require("jwt-simple");
 
 
 exports.getRandomWord = async (req, res) => {
-    console.log('here')
-    const hangmanWords = await Hangman.find({}).exec()
-    // console.log(hangmanWords)
-    // const randomWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)];
-    res.send({ hangmanWords })
-    // const newWord = new Hangman({
-    //     word: 'random word'
-    // });
-    // try {
-    //     await newUser.save()
-    //     console.log(newUser)
-    // } catch (e) {
-    //     console.log(e.message)
-    // }
+    try {
+        const hangmanWords = await Hangman.find({}).exec()
+        res.send({ hangmanWords })
+    } catch (e) {
+        res.send({ err: true })
+    }
 }
 exports.addWord = async (req, res) => {
     const { word } = req.body
@@ -49,25 +41,39 @@ exports.saveScore = async (req, res) => {
         const decoded = jwt.decode(token, process.env.SECRET);
         const userId = decoded.id
         const getCurrentUser = await User.findOne({ _id: userId }).exec()
-        console.log(getCurrentUser)
+
         let currentLoseScore
         let currentWinScore
-        let { winlose } = req.body
+        let currentPoints = getCurrentUser.hangmanPoints
+        let { winlose, onTime } = req.body
+        console.log(onTime)
+
         try {
+
             if (winlose === 'lose') {
                 currentLoseScore = getCurrentUser.hangmanL
                 currentWinScore = getCurrentUser.hangmanW
                 const newLoseScore = getCurrentUser.hangmanL + 1
                 const newWinScore = getCurrentUser.hangmanW
-                await User.findOneAndUpdate({ _id: userId }, { hangmanL: newLoseScore }).exec()
-                res.send({ addedScore: true, newLoseScore, newWinScore })
+                if (currentPoints < 0) currentPoints = 1
+                await User.findOneAndUpdate({ _id: userId }, { hangmanL: newLoseScore, hangmanPoints: currentPoints - 1 }).exec()
+                res.send({ addedScore: true, newLoseScore, newWinScore, getCurrentUser })
             } else {
+                console.log('victory')
                 currentLoseScore = getCurrentUser.hangmanL
                 currentWinScore = getCurrentUser.hangmanW
                 const newLoseScore = getCurrentUser.hangmanL
                 const newWinScore = getCurrentUser.hangmanW + 1
-                await User.findOneAndUpdate({ _id: userId }, { hangmanW: newWinScore }).exec()
-                res.send({ addedScore: true, newLoseScore, newWinScore })
+                if (onTime) {
+                    const newScore = currentPoints + 3
+                    console.log('on time')
+                    await User.findOneAndUpdate({ _id: userId }, { hangmanW: newWinScore, hangmanPoints: newScore }).exec()
+                } else {
+                    const newScore = currentPoints + 2
+                    console.log('reg game')
+                    await User.findOneAndUpdate({ _id: userId }, { hangmanW: newWinScore, hangmanPoints: newScore }).exec()
+                }
+                res.send({ addedScore: true, newLoseScore, newWinScore, getCurrentUser })
             }
         } catch (e) {
             console.log(e.message)

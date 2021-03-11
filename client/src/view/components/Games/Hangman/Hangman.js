@@ -1,6 +1,10 @@
 import './dist/hangman.css';
 import React, { useState, useEffect } from 'react';
 import HangmanAdmin from './HangmanAdmin'
+import {
+    Link,
+} from "react-router-dom";
+
 import img6 from './img/6.png'
 import img5 from './img/5.png'
 import img4 from './img/4.png'
@@ -10,7 +14,9 @@ import img1 from './img/1.png'
 import img0 from './img/0.png'
 const imgs = [img0, img1, img2, img3, img4, img5, img6]
 let hangmanWords
-const Hangman = () => {
+
+const Hangman = ({ setFromWhichGame }) => {
+
     const [finishMsg, setFinish] = useState('')
     const [onTime, setOnTime] = useState(false)
     const [timer, setTimer] = useState()
@@ -51,11 +57,14 @@ const Hangman = () => {
 
             {newGame ?
                 <div>
-                    < button id="newGame" onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer.(Extra points)</button>
-                    < button id="newGame" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime)}>Start Game with unlimated time.</button>
+                    < button id="newGame" onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer(Extra points)</button>
+                    < button id="newGame" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, false)}>Start Game with unlimated time</button>
+                    <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
+
                 </div>
                 :
-                null
+                <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
+
             }
 
             {
@@ -115,26 +124,20 @@ let strikes = 6
 let counter = 0
 let timerInterval
 
-// const getRandomWord = async () => {
-//     console.log('top')
-//     let randomWord = ''
-//     await fetch("/games/hangman")
-//         .then(r => r.json())
-//         .then(data => (
-//             randomWord = data.randomWord.word
-//         ))
-//     console.log('bottom')
-//     return randomWord
-// }
 const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, timer, setTimer) => {
-    console.log('timer new game')
     setGameOver(false)
     setTimer('')
-    const chosenWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)].word
     setOnTime(true)
-
+    strikes = 6
+    const onTime = true
+    
     let twoMinutes = 60 * 2
     startTimer(twoMinutes, setTimer);
+    const chosenWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)].word
+    setStrikesDom(`You have ${strikes} strikes left.`)
+    setHangmanImg(imgs[strikes])
+    setNewGameButton(false)
+    createHiddenWord(onTime, setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses)
 
     function startTimer(duration, setTimer) {
         let timer = duration, minutes, seconds;
@@ -163,14 +166,8 @@ const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton
             }
         }, 1000);
     }
-
-    strikes = 6
-    setStrikesDom(`You have ${strikes} strikes left.`)
-    setHangmanImg(imgs[strikes])
-    setNewGameButton(false)
-    createHiddenWord(setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses)
 }
-async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime) {
+async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setVictorys, setLoses, setOnTime, onTime) {
     setOnTime(false)
     setGameOver(false)
     const hintLetter = []
@@ -181,11 +178,11 @@ async function handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameBu
     setHangmanImg(imgs[strikes])
     setNewGameButton(false)
 
-    createHiddenWord(setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)
+    createHiddenWord(onTime, setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)
 
 }
 
-const createHiddenWord = (setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => {
+const createHiddenWord = (onTime, setLetters, setStrikesDom, setNewGameButton, setHangmanImg, chosenWord, setHiddenWord, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => {
     let chosenWordArray = []
 
     for (let i = 0; i < chosenWord.length; i++) {
@@ -202,22 +199,22 @@ const createHiddenWord = (setLetters, setStrikesDom, setNewGameButton, setHangma
     })
 
     setHiddenWord(html)
-    renderLetters(setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)
+    renderLetters(onTime, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)
 }
 
-const renderLetters = (setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => {
+const renderLetters = (onTime, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => {
     const lettersMap = lettersArray.map(letter => {
-        return (<button id="buttonLetter" key={letter} data-letter={letter} onClick={handleLetterClick(setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)} style={{ gridArea: letter }}>{letter}</button >)
+        return (<button id="buttonLetter" key={letter} data-letter={letter} onClick={handleLetterClick(onTime, setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter)} style={{ gridArea: letter }}>{letter}</button >)
     })
     setLetters(lettersMap)
 }
 
-const handleLetterClick = (setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => e => {
+const handleLetterClick = (onTime, setStrikesDom, setHiddenWord, setLetters, setNewGameButton, setHangmanImg, chosenWord, chosenWordArray, setHintButton, setGameOver, setFinish, setVictorys, setLoses, hintLetter) => e => {
     checkIfLetterFound(chosenWord, chosenWordArray, setHintButton, hintLetter, e)
     updateHiddenWord(chosenWord, chosenWordArray, setHiddenWord, setHintButton)
     updateImg(chosenWordArray, setStrikesDom, setHangmanImg)
     checkLose(strikes, setLetters, setHiddenWord, setStrikesDom, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg)
-    checkVictory(chosenWordArray, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg)
+    checkVictory(onTime, chosenWordArray, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg)
 }
 const checkIfLetterFound = (chosenWord, chosenWordArray, setHintButton, hintLetter, e) => {
     counter = 0
@@ -269,10 +266,10 @@ const checkLose = async (strikes, setLetters, setHiddenWord, setStrikesDom, setN
         setStrikesDom('')
         setHangmanImg(img6)
         setNewGameButton(true)
-        await saveScore('lose', setVictorys, setLoses)
+        await saveScore('lose', false, setVictorys, setLoses)
     }
 }
-const checkVictory = async (chosenWordArray, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg) => {
+const checkVictory = async (onTime, chosenWordArray, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setGameOver, setFinish, setVictorys, setLoses, setHangmanImg) => {
     let victoryCondition = chosenWordArray.length
     chosenWordArray.forEach(letter => {
         if (letter != "_") {
@@ -280,6 +277,8 @@ const checkVictory = async (chosenWordArray, setLetters, setStrikesDom, setHidde
         }
     })
     if (victoryCondition == 0) {
+        console.log(onTime)
+
         clearInterval(timerInterval);
         setGameOver(true)
         setFinish('Victory!')
@@ -288,19 +287,20 @@ const checkVictory = async (chosenWordArray, setLetters, setStrikesDom, setHidde
         setHiddenWord('')
         setHangmanImg(img6)
         setNewGameButton(true)
-        await saveScore('win', setVictorys, setLoses)
+        await saveScore('win', onTime, setVictorys, setLoses)
     }
 }
-const saveScore = async (winlose, setVictorys, setLoses) => {
+const saveScore = async (winlose, onTime, setVictorys, setLoses) => {
     await fetch("/games/hangman", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ winlose }),
+        body: JSON.stringify({ winlose, onTime }),
     })
         .then((res) => res.json())
         .then(async (data) => {
+            console.log(data)
             if (data.addedScore === true) {
                 setVictorys(data.newWinScore)
                 setLoses(data.newLoseScore)

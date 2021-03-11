@@ -31,6 +31,10 @@ const UserSchema = new Schema(
             type: Number,
             default: 0
         },
+        hangmanPoints: {
+            type: Number,
+            default: 0,
+        },
         simonHS: {
             type: Number,
             default: 0
