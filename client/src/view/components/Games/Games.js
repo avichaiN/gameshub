@@ -19,7 +19,7 @@ const Games = () => {
             <div className='games__container'>
                 <div className='games__nav'>
                     <Link className='games__hangman' to="/hangman">Hang-Man</Link>
-                    <Link className='games__leaderboard' to='/leaderboard'>Leaderboard</Link>
+                    <Link onClick={() => setFromWhichGame('')} className='games__leaderboard' to='/leaderboard'>Leaderboard</Link>
                     <Link className='games__hangman' to="/simon">Simon</Link>
 
                 </div>
@@ -33,7 +33,7 @@ const Games = () => {
                         <Simon setFromWhichGame={setFromWhichGame} />
                     </Route>
                     <Route path="/leaderboard">
-                        <Leaderboard props={game} />
+                        <Leaderboard setFromWhichGame={setFromWhichGame} game={game} />
                     </Route>
 
                 </Switch>

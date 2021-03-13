@@ -55,7 +55,7 @@ exports.saveScore = async (req, res) => {
                 currentWinScore = getCurrentUser.hangmanW
                 const newLoseScore = getCurrentUser.hangmanL + 1
                 const newWinScore = getCurrentUser.hangmanW
-                if (currentPoints < 0) currentPoints = 1
+                if (currentPoints <= 0) currentPoints = 1
                 await User.findOneAndUpdate({ _id: userId }, { hangmanL: newLoseScore, hangmanPoints: currentPoints - 1 }).exec()
                 res.send({ addedScore: true, newLoseScore, newWinScore, getCurrentUser })
             } else {

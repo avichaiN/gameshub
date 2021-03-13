@@ -3,8 +3,14 @@ const router = express.Router();
 
 const hangmanController = require("../z-controllers/hangmanController")
 const simonController = require("../z-controllers/simonController")
+const leaderboardController = require("../z-controllers/leaderboardController")
+
 const checkAdmin = require("../z-controllers/checkAdmin");
 
+
+router
+    .route('/leaderboard/:id')
+    .get(leaderboardController.getLeaderBoard)
 
 router
     .route("/hangman")
