@@ -66,7 +66,7 @@ const Hangman = ({ setFromWhichGame }) => {
                 <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
 
             }
-
+            <div><p>Win with timer = +3 points<br/>Win = +2 points<br/>Lose = -1 point</p></div>
             {
                 gameOver ?
                     < div >

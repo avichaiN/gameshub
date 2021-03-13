@@ -247,7 +247,8 @@ const Simon = ({ setFromWhichGame }) => {
 
             </div>
             <div className='simon__turn'>
-                {gameOver ? <h2>Game over</h2> : null}
+                {gameOver ? <div>{userLoggedIn ? <h2>Game over - Score : {score}</h2> : <div className='gameOverGuest'> <h2>Game over - Score : {score}</h2><h2>Login to keep track of your highscore!</h2></div>}
+                </div> : null}
                 {game ? <div className='simon__turnText'>{playerTurn ? <h2>Your turn</h2> : <h2>Pay attention</h2>}</div> : null}
             </div>
 
@@ -260,7 +261,7 @@ const Simon = ({ setFromWhichGame }) => {
 
                 </div></div>
 
-        </div>
+        </div >
     )
 }
 

@@ -10,7 +10,7 @@ function App() {
 
   return (
     <div className="App">
-      {!loggedIn ? <Login setLoggedIn={setLoggedIn} /> : <Games/>}
+      {!loggedIn ? <div><Login setLoggedIn={setLoggedIn} /><Games /></div> : <Games />}
     </div>
   );
 }
