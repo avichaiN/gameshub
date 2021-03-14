@@ -95,8 +95,6 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
     }
     const playAudio = (audio) => {
         if (sound) {
-            audio.pause()
-            audio.currentTime = 0
             audio.play()
         }
     }

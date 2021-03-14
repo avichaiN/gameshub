@@ -99,7 +99,7 @@ exports.resetPassword = async (req, res) => {
                 from: "GameNoStop, Support.",
                 to: `${userEmail}`,
                 subject: "GameNoStop. Reset Password.",
-                html: `localhost:3000/updatePassword?${encodedId}`,
+                html: `https://gamescollectionhub.herokuapp.com/updatePassword?${encodedId}`,
             };
 
             tranporter.sendMail(mailOptions, function (e, info) {
