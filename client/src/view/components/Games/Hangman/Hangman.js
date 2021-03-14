@@ -56,53 +56,60 @@ const Hangman = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                 hangmanWords = data.hangmanWords
             ))
     }, [])
-
+    const resetGame = () => {
+        setGameOver(true)
+        setNewGameButton(true)
+    }
     return (
-        <div className="wrapper">
+        <div className="wrapper bg-light">
 
             {newGame ?
-                <div>
-                    < button id="newGame" onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer(Extra points)</button>
-                    < button id="newGame" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, false)}>Start Game with unlimated time</button>
+                <div className='hangman__start'>
+                    <h4 className='title mt-2'>Hangman</h4>
+                    < button className='btn btn-success' onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer(Extra points)</button>
+                    < button className="btn btn-success" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, false)}>Start Game with unlimated time</button>
                     <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
-
                 </div>
                 :
-                <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
-
-            }
-            <div>
-                <div>
-                    {loggedIn ?
-                        <div>
-                            <h4>Hangman</h4>
-                            <p>
-                                Points - {pointsAmount}
-                            </p>
-                            <p>
-                                Victory's - {victorysAmount}
-                            </p>
-                            <p>
-                                Loses - {losesAmount}
-                            </p>
-                        </div>
-                        :
-                        <div>
-                            <h4>Hangman</h4>
-                            <p>{finishMsg}</p>
-                                Log-in to keep track of your games!
-                                </div>
-                    }
+                <div className='hangman__start'>
+                    <h4 className='title mt-2'>Hangman</h4>                    <button onClick={resetGame} className='btn btn-danger'>Reset</button>
+                    <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
                 </div>
-                <p>Win with timer = +3 points<br />Win = +2 points<br />Lose = -1 point</p>
-            </div>
+            }
+            {loggedIn ?
+                <div className='hangman__stats'>
+                    <p>Win with timer +3 points<br />Win unlimated +2 points<br />Lose -1 point</p>
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr className='table-dark'>
+                                <th scope="col">Points</th>
+                                <th scope="col">Victory's</th>
+                                <th scope="col">Loses</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className='table-dark'>
+                                <th scope="col">{pointsAmount}</th>
+                                <th scope="col">{victorysAmount}</th>
+                                <th scope="col">{losesAmount}</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                :
+                <div className='hangman__stats'>
+                    <p>{finishMsg}</p>
+                    <p>Log-in to keep track of your games!</p>
+                    <p>Win with timer +3 points<br />Win unlimated +2 points<br />Lose -1 point</p>
+                </div>
+            }
 
             {
                 gameOver ?
                     null
                     :
 
-                    <div>
+                    <div className='hangman__game'>
                         <div className="gameInfo">
                             <div id="strikes">{strikesDom}</div>
                             <div id="toot">{hiddenWord}</div>
@@ -121,12 +128,12 @@ const Hangman = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     </div>
             }
 
-            {
+            {/* {
                 isAdmin ?
                     <HangmanAdmin allWords={allWords} setAllWords={setAllWords} />
                     :
                     null
-            }
+            } */}
         </div >
     )
 }

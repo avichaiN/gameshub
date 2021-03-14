@@ -230,7 +230,7 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     <div className='simon__buttons'>
                         {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start btn btn-success'>Start</button>
                             : <button onClick={() => setGame(false)} className='simon__stop btn btn-danger'>Reset</button>}
-                        <Link onClick={() => setFromWhichGame('simon')} className='games__leaderboard btn btn-secondary simon_leaderboard' to='/leaderboard'>Leaderboard</Link>
+                        <Link onClick={() => setFromWhichGame('simon')} className='games__leaderboard btn btn-primary simon_leaderboard' to='/leaderboard'>Leaderboard</Link>
                     </div>
                 </div>
 
