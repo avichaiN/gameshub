@@ -12,7 +12,7 @@ const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
 const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
 const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3')
 const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
-const buzz = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
+const buzz = new Audio('https://cdn.rawgit.com/Cu7ious/React.js-based-Simon-Game/master/assets/sounds/buzz.mp3')
 const trumpet = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
 let combination = []
 let clickNum = 0
@@ -184,7 +184,6 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     } else if (!loggedIn && combination.length > highscore) {
                         setHighScore(combination.length)
                     }
-                    if (sound) trumpet.play()
                     setPlayerTurn(false)
                     clickNum = 0
                     setFirstGame(false)
@@ -200,7 +199,7 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     saveGame(combination.length - 1)
                     setHighScore(combination.length - 1)
                 }
-                if (sound) trumpet.play()
+                if (sound) buzz.play()
                 setGameOver(true)
                 setPlayerTurn(false)
                 setGame(false)
@@ -218,12 +217,12 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
         })
     }
     return (
-        <div className='simon__container container-sm'>
+        <div className='simon__container container-sm bg-light mt-2'>
             <div className='simon__topHalf'>
 
                 <div className='simon_settings'>
                     <div className='simon__titleBox'>
-                        <h2 className='simon__title light'>Simon</h2>
+                        <h2 className='simon__title'>Simon</h2>
                         {sound ? <Icon path={mdiVolumeHigh} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
                             : <Icon path={mdiVolumeOff} size={2} onClick={() => setSound(!sound)} className='simon__soundToggle' />
                         }
@@ -231,23 +230,23 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     <div className='simon__buttons'>
                         {!game ? <button onClick={() => handleStartSimon(setGame, colors, setYellowOpacity, setBlueOpacity, setRedOpacity, setGreenOpacity)} className='simon__start btn btn-success'>Start</button>
                             : <button onClick={() => setGame(false)} className='simon__stop btn btn-danger'>Reset</button>}
-                        <Link onClick={() => setFromWhichGame('simon')} className='games__leaderboard btn btn-light simon_leaderboard' to='/leaderboard'>Leaderboard</Link>
+                        <Link onClick={() => setFromWhichGame('simon')} className='games__leaderboard btn btn-secondary simon_leaderboard' to='/leaderboard'>Leaderboard</Link>
                     </div>
                 </div>
 
                 <div className='simon__gameInfo'>
-                    <h2 className='light'>Stats</h2>
-                    {game ? <div className='gameinfo1'><div className='gameinfo2 light'><h2 className='light'>Current score: {score}</h2></div> </div> : null}
+                    <h2>Statistics</h2>
+                    {game ? <div className='gameinfo1'><div className='gameinfo2'><h2>Current Level: {score}</h2></div> </div> : null}
 
-                    {!firstGame ? <div> {loggedIn ? <div className='simon__highscore light'>Highscore:{highscore}</div> : <div className='simon__highscore light'>Highscore: {highscore}</div>}</div> : null}
+                    {!firstGame ? <div> {loggedIn ? <div className='simon__highscore'>Highscore:{highscore}</div> : <div className='simon__highscore'>Highscore: {highscore}</div>}</div> : null}
 
                 </div>
 
             </div>
             <div className='simon__turn'>
-                {gameOver ? <div>{loggedIn ? <h2 className='light'>Game over - Score : {score}</h2> : <div className='gameOverGuest light'> <h2 className='light'>Game over - Score : {score}</h2><h2 className='light'>Login to keep track of your highscore!</h2></div>}
+                {gameOver ? <div>{loggedIn ? <h2>Game over - Level : {score}</h2> : <div className='gameOverGuest'> <h2 >Game over - Level : {score}</h2><h2>Login to keep track of your statistics!</h2></div>}
                 </div> : null}
-                {game ? <div className='simon__turnText light'>{playerTurn ? <h2 className='light'>Your turn</h2> : <h2 className='light'>Pay attention</h2>}</div> : null}
+                {game ? <div className='simon__turnText'>{playerTurn ? <h2>Your turn</h2> : <h2>Pay attention</h2>}</div> : null}
             </div>
 
             <div className='simon__boxesContainer'>
