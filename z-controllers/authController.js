@@ -1,4 +1,4 @@
-const User = require("../z-models/user");
+const User = require("../z-models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
 const nodemailer = require("nodemailer");
