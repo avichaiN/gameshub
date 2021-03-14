@@ -1,6 +1,5 @@
 const Hangman = require("../z-models/Hangman");
-const User = require("../z-models/user");
-
+const User = require("../z-models/User");
 const jwt = require("jwt-simple");
 
 

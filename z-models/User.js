@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Hangman = require("./Hangman");
+
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(

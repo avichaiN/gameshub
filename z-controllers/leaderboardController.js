@@ -1,4 +1,4 @@
-const User = require("../z-models/user");
+const User = require("../z-models/User");
 
 
 exports.getLeaderBoard = async (req, res) => {

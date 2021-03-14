@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NavBar from './view/components/Navbar/NavBar'
 import './view/components/dist/index.css';
 
