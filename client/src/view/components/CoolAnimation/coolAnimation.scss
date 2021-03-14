@@ -4,12 +4,13 @@
     width: 40%;
     overflow: auto;
     margin: auto;
-    background-size: cover;
+    background-size: contain;
 }
 
 @media only screen and (max-width: 950px) {
     .bgLogo {
-        width: 92%;
+
+        width: 90%;
     }
 }
 
@@ -190,9 +191,10 @@ section {
 }
 
 @media only screen and (max-width: 531px) {
-    .bgLogo{
+    .bgLogo {
         margin-top: 10%;
     }
+
     .hover {
         display: none
     }
