@@ -1,5 +1,5 @@
-
 import swal from 'sweetalert';
+
 
 const LoginForm = ({
     setLoggedIn,
@@ -18,24 +18,37 @@ const LoginForm = ({
 }) => {
 
     return (
-        <form onSubmit={handleLogin(setLoggedIn, setBadCredentials, setEnterUsername, setEnterPassword, setUsernameColor, setPasswordColor, setLoadingCircle)} className='login__Form'>
-            {badCredentials ? <div>sorry wrong info</div> : null}
+        <form className='loginForm mt-3' onSubmit={handleLogin(setLoggedIn, setBadCredentials, setEnterUsername, setEnterPassword, setUsernameColor,
+            setPasswordColor, setLoadingCircle)}>
 
-            <input style={{ border: emptyUsernameColor }} type='text' pattern="[A-Za-z0-9]+|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" name='username' placeholder='Username' />
-            {enterUsername ? <label>Please enter Username/Email</label> : null}
-            <input style={{ border: emptyPasswordColor }} type='password' name='password' placeholder='Passowrd' />
-            {enterPassword ? <label>Please enter Password</label> : null}
-            <button>Login</button>
+            {badCredentials ?
+                <div className="mb-3 light">
+                    Username or Password is incorrect
+                </div>
+                : null
+            }
 
-            <button onClick={() => handleForgotPassword(setForgotPassword)} type='button'>Forgot password?</button>
+            <div className="mb-3" name='user'>
+                <input pattern="[A-Za-z0-9]+|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" name='username' placeholder='Username'
+                    type="text" style={{ border: emptyUsernameColor }} className="form-control"
+                    placeholder='Username' />
+                {enterUsername ? <label className='form-text light'>Please enter Username/Email</label> : null}
+            </div>
+            <div className="mb-3" name='pass'>
+                <input style={{ border: emptyPasswordColor }} type='password' name='password' placeholder='Passowrd'
+                    className="form-control" />
+                {enterPassword ? <label className='form-text light'>Please enter Password</label> : null}
+            </div>
+            <button type="submit" className="btn btn-primary">Sign in</button>
+            <button onClick={() => handleForgotPassword(setForgotPassword)} className="btn btn-secondary mt-2" type='button'>Forgot password?</button>
         </form>
     )
 }
 
 const handleLogin = (setLoggedIn, setBadLogin, setEnterUsername, setEnterPassword, setUsernameColor, setPasswordColor, setLoadingCircle) => e => {
     e.preventDefault()
-    const username = e.target.children.username.value
-    const password = e.target.children.password.value
+    const username = e.target.children.user.children.username.value
+    const password = e.target.children.pass.children.password.value
     console.log(username)
     if (!username) {
         setEnterUsername(true)
@@ -69,6 +82,7 @@ const handleLogin = (setLoggedIn, setBadLogin, setEnterUsername, setEnterPasswor
                 .then(async (data) => {
                     if (data.status === 'authorized') {
                         setLoadingCircle(false)
+                        setLoggedIn(true)
                         await swal({
                             title: "Login successfully",
                             text: 'Welcome',
@@ -76,7 +90,6 @@ const handleLogin = (setLoggedIn, setBadLogin, setEnterUsername, setEnterPasswor
                             buttons: false,
                             timer: 1500,
                         });
-                        setLoggedIn(true)
                     } else {
                         setLoadingCircle(false)
                         setBadLogin(true)

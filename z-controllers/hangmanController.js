@@ -56,24 +56,26 @@ exports.saveScore = async (req, res) => {
                 const newLoseScore = getCurrentUser.hangmanL + 1
                 const newWinScore = getCurrentUser.hangmanW
                 if (currentPoints <= 0) currentPoints = 1
-                await User.findOneAndUpdate({ _id: userId }, { hangmanL: newLoseScore, hangmanPoints: currentPoints - 1 }).exec()
-                res.send({ addedScore: true, newLoseScore, newWinScore, getCurrentUser })
+                const newScore = currentPoints - 1
+                await User.findOneAndUpdate({ _id: userId }, { hangmanL: newLoseScore, hangmanPoints: newScore }).exec()
+                res.send({ addedScore: true, newLoseScore, newWinScore, newScore, getCurrentUser })
             } else {
                 console.log('victory')
                 currentLoseScore = getCurrentUser.hangmanL
                 currentWinScore = getCurrentUser.hangmanW
                 const newLoseScore = getCurrentUser.hangmanL
                 const newWinScore = getCurrentUser.hangmanW + 1
+                let newScore
                 if (onTime) {
-                    const newScore = currentPoints + 3
+                    newScore = currentPoints + 3
                     console.log('on time')
                     await User.findOneAndUpdate({ _id: userId }, { hangmanW: newWinScore, hangmanPoints: newScore }).exec()
                 } else {
-                    const newScore = currentPoints + 2
+                    newScore = currentPoints + 2
                     console.log('reg game')
                     await User.findOneAndUpdate({ _id: userId }, { hangmanW: newWinScore, hangmanPoints: newScore }).exec()
                 }
-                res.send({ addedScore: true, newLoseScore, newWinScore, getCurrentUser })
+                res.send({ addedScore: true, newLoseScore, newWinScore, newScore, getCurrentUser })
             }
         } catch (e) {
             console.log(e.message)

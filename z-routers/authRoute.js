@@ -16,8 +16,9 @@ router
     .get(authController.checkAuth)
 
 router
-    .route("/guest")
-    .get(authController.loginAsGuest)
+    .route("/logout")
+    .get(authController.logOut)
+
 
 router
     .route("/reset")

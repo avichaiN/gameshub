@@ -19,6 +19,7 @@ router
     .put(hangmanController.saveScore)
     .delete(checkAdmin, hangmanController.deleteWord)
 
+
 router
     .route("/hangman/allwords")
     .get(checkAdmin, hangmanController.allWords)

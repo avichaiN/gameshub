@@ -8,29 +8,33 @@ const ForgotPassword = ({ setEnterEmail, setEmailColor, setEmailNotFound, setFor
     const [loadingCircle, setLoadingCircle] = useState(false)
     return (
         <div>
-            <h3>Reset your password</h3>
-            <p>We'll email you instructions to reset the password.</p>
 
             {loadingCircle ?
                 <LoadingCircle />
                 :
-                <form onSubmit={sendResetPassword(setEnterEmail, setEmailColor, setEmailNotFound, setForgotPassword, setLoadingCircle)}>
-                    <label >Email</label>
-                    <input name='email' style={{ border: emptyEmailColor }} type='email' />
-                    {enterEmail ? <label>Email cannot be empty</label> : null}
-                    {emailNotFound ? <p>Matching account with this E-mail not found.</p> : null}
-                    <button>Reset password</button>
-                </form>
-            }
+                <form className='loginForm mt-3' onSubmit={sendResetPassword(setEnterEmail, setEmailColor, setEmailNotFound,
+                    setForgotPassword, setLoadingCircle)}>
+                    <h3 className='light'>Reset your password</h3>
+                    <p className='light'>We'll email you instructions to reset your password.</p>
+                    <div className="mb-3" name='email'>
+                        <input name='email' placeholder='Email' type="text" style={{ border: emptyEmailColor }}
+                            className="form-control" />
+                        {enterEmail ? <label className='form-text light'>Email cannot be empty</label> : null}
+                        {emailNotFound ? <label className='form-text light'>Matching account with this E-mail not found.</label> : null}
+                    </div>
+                    <button type="submit" className="btn btn-primary">Reset password</button>
+                    <button className="btn btn-secondary mt-2" onClick={() => handleGoBackToLogin(setForgotPassword)}>Back to login</button>
 
-            <button onClick={() => handleGoBackToLogin(setForgotPassword)}>Back to login</button>
+                </form>
+
+            }
         </div>
     )
 }
 
 const sendResetPassword = (setEnterEmail, setEmailColor, setEmailNotFound, setForgotPassword, setLoadingCircle) => e => {
     e.preventDefault()
-    const userEmail = e.target.children.email.value
+    const userEmail = e.target.children.email.children.email.value
     setEmailNotFound(false)
 
     if (!userEmail) {

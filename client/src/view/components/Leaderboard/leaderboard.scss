@@ -1,0 +1,62 @@
+.leaderboard__title {
+    text-align: center;
+    color: white;
+    padding: 5px;
+}
+
+.navBarFather {
+    border-bottom: 1px solid lightgray;
+
+    .navbarContainer {
+        width: 100%;
+
+        .navbarContent {
+            display: flex;
+            justify-content: center;
+            border-radius: 5px;
+
+            .nav-link {
+                border: 1px solid lightgray;
+                border-radius: 5px;
+                margin: 5px;
+            }
+        }
+    }
+}
+
+.sortHangman {
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid lightgray;
+    display: inline-block;
+    width: 99%;
+    margin: auto;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 1% 0;
+}
+.whichSort{
+    text-align: center;
+}
+
+.leaderboard__container {
+    height: 100vh;
+}
+
+.leaderboard__gameTitle {
+    text-align: center;
+    color: white;
+}
+
+.leaderboard__hangmanTable {
+    color: white;
+}
+
+.table {
+    width: 65%;
+    margin: auto;
+}
+
+.leaderboard__simon {
+    color: white;
+}

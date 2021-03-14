@@ -57,6 +57,19 @@ exports.registerUser = (req, res) => {
             newUser.password = hash;
             await newUser.save();
 
+            const token = jwt.encode(
+                {
+                    id: newUser._id,
+                    role: newUser.role,
+                    username: newUser.username,
+                    time: new Date().getTime(),
+                },
+                process.env.SECRET
+            );
+            res.cookie("userLoggedIn", token, {
+                maxAge: 9200000,
+                httpOnly: true,
+            });
 
             res.send({ status: "authorized" });
         } catch (e) {
@@ -67,20 +80,6 @@ exports.registerUser = (req, res) => {
 
 }
 
-exports.loginAsGuest = (req, res) => {
-
-    const token = jwt.encode(
-        {
-            time: new Date().getTime(),
-        },
-        process.env.SECRET
-    );
-    res.cookie("guestLogged", token, {
-        maxAge: 9200000,
-        httpOnly: true,
-    });
-    res.send({ status: "authorized" });
-}
 exports.resetPassword = async (req, res) => {
     try {
         const userEmail = req.body.userEmail;
@@ -156,20 +155,28 @@ exports.checkCookie = (req, res) => {
         console.log(e.message)
     }
 }
-exports.checkAuth = (req, res) => {
+exports.checkAuth = async (req, res) => {
     const token = req.cookies.userLoggedIn;
 
     if (token) {
         const decoded = jwt.decode(token, process.env.SECRET);
-
+        const user = await User.findOne({ _id: decoded.id }).exec()
         if (decoded.role === 'admin') {
-            res.send({ admin: true })
+            res.send({ admin: true, user })
         } else if (decoded.role === 'public') {
-            res.send({ user: true })
+            res.send({ user: true, user })
         } else {
             res.send({ admin: false })
         }
     } else {
         res.send({ admin: false })
     }
+}
+exports.logOut = (req, res) => {
+
+    res.cookie("userLoggedIn", 'token', {
+        maxAge: -10,
+        httpOnly: true,
+    });
+    res.send({ logout: true })
 }

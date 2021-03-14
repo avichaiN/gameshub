@@ -1,9 +1,10 @@
 *{
     font-family: 'RocknRoll One', sans-serif;
 }
-// .App{
-//     background-color: #1e333b;
-// }
+.light{
+    color: white;
+}
+
 @keyframes rotate {
     from {
         transform: rotate(0deg);
@@ -25,11 +26,10 @@
 }
 
 .load {
-    width: 25px;
-    height: 25px;
-    // margin: 6% auto 0;
-    margin: 4% auto;
-    border: solid 10px #280c31;
+    width: 35px;
+    height: 35px;
+    margin: 10% auto;
+    border: solid 10px #ffffff;
     border-radius: 50%;
     border-right-color: transparent;
     border-bottom-color: transparent;

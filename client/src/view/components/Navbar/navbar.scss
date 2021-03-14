@@ -1,0 +1,22 @@
+.navbar__container {
+
+    .mainTitle {
+        border-bottom: 1px solid lightgray;
+    }
+
+    .navBarContent {
+        width: 50%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media only screen and (max-width: 990px) {
+    .navbar__container {
+        .navBarContent {
+            width: 100%;
+            display: flex;
+        }
+    }
+}

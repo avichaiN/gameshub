@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './dist/login.css';
-import swal from 'sweetalert';
 import LoadingCircle from '../LoadingCircle'
 import ForgotPassword from './ForgotPassword'
 import LoginForm from './LoginForm'
@@ -13,10 +12,11 @@ import {
     Switch,
     Route,
     Link,
+    NavLink,
 } from "react-router-dom";
 
 
-const Login = ({ setLoggedIn }) => {
+const Login = ({ setLoggedIn, setGuestLoggedIn }) => {
 
 
     useEffect(() => {
@@ -32,11 +32,20 @@ const Login = ({ setLoggedIn }) => {
     return (
         <Router>
             <div className='login__Container'>
-
-                <div className='login__Nav'>
-                    <Link className='login__navLogin' to="/">Login</Link>
-                    <Link className='login__navRegister' to="/register">Create Account</Link>
-                </div>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light navbarFather">
+                    <div className="container-fluid">
+                        <div className="navbar-expand navbarContainer">
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0 navbarContent">
+                                <li className="nav-item">
+                                    <NavLink exact to='/login-register' exact className='nav-link'>Sign in</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink exact to='/register' exact className='nav-link'>Create account</NavLink>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
 
                 <Switch>
                     <Route path="/register">
@@ -45,8 +54,8 @@ const Login = ({ setLoggedIn }) => {
                     <Route path="/updatePassword">
                         <UpdatePassword />
                     </Route>
-                    <Route path="/">
-                        <LoginPage setLoggedIn={setLoggedIn} />
+                    <Route path="/login-register">
+                        <LoginPage setLoggedIn={setLoggedIn} setGuestLoggedIn={setGuestLoggedIn} />
                     </Route>
                 </Switch>
             </div>
@@ -54,7 +63,7 @@ const Login = ({ setLoggedIn }) => {
     )
 }
 
-const LoginPage = ({ setLoggedIn }) => {
+const LoginPage = ({ setLoggedIn, setGuestLoggedIn }) => {
     const [forgotPassword, setForgotPassword] = useState(false)
     const [badCredentials, setBadCredentials] = useState(false)
     const [enterUsername, setEnterUsername] = useState(false)
@@ -71,7 +80,7 @@ const LoginPage = ({ setLoggedIn }) => {
 
     return (
 
-        < div >
+        < div className='mainContainer bg-dark'>
 
             {!forgotPassword ?
 
@@ -96,7 +105,6 @@ const LoginPage = ({ setLoggedIn }) => {
                             enterUsername={enterUsername}
                         />
                     }
-                    <button onClick={handleEnterAsGuest(setLoggedIn)} className='login__Guest'>Enter as guest</button>
                 </div>
                 :
                 <ForgotPassword
@@ -122,26 +130,6 @@ const RegisterPage = ({ setLoggedIn }) => {
 }
 
 
-const handleEnterAsGuest = setLoggedIn => e => {
-
-    fetch("/guest")
-        .then((res) => res.json())
-        .then(async (data) => {
-            if (data.status === 'authorized') {
-                await swal({
-                    title: "Entering as Guest!",
-                    text: 'Welcome',
-                    icon: "success",
-                    buttons: false,
-                    timer: 1500,
-                });
-                setLoggedIn(true)
-            } else {
-                setLoggedIn(false)
-            }
-        });
-}
 
 
-
-export { Login }
+export default Login

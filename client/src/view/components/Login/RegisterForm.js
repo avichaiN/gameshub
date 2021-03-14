@@ -23,46 +23,56 @@ const RegisterForm = ({ setLoggedIn }) => {
     const [passwordsMatch, setPasswordsMatch] = useState('')
 
     return (
-        <div className='login__registerForm'>
+        <div className='mainContainer bg-dark'>
 
             {loadingCircle ?
 
                 <LoadingCircle />
                 :
-                <form
-                    onSubmit={
-                        handleRegister(setLoggedIn, setTaken, setWeekPassword, setBadInput,
-                            setEnterUsername, setUsernameColor,
-                            setEnterEmail, setEmailColor,
-                            setEnterPassword, setPasswordColor, setLoadingCircle, setMatchPassword
-                        )
-                    }
-                    className='register__form'>
-                    {infoTaken ? <div className='badCredentials'>* Username or Email is taken!</div> : null}
-                    {badInput ? <div className='badCredentials'>* Please check you have filled the form!</div> : null}
-                    {weekPassword ? <div className='badCredentials'>* Password is not strong enough!</div> : null}
+                <form className='loginForm mt-3' onSubmit={
+                    handleRegister(setLoggedIn, setTaken, setWeekPassword, setBadInput,
+                        setEnterUsername, setUsernameColor,
+                        setEnterEmail, setEmailColor,
+                        setEnterPassword, setPasswordColor, setLoadingCircle, setMatchPassword
+                    )
+                }>
 
-
-                    <input style={{ border: emptyUsernameColor }} type='text' name='username' maxLength="35" placeholder='Username' />
-                    {enterUsername ? <label>Please enter Username</label> : null}
-                    <input style={{ border: emptyEmailColor }} type='email' name='email' maxLength="40" placeholder='E-mail address' />
-                    {enterEmail ? <label>Please enter Email</label> : null}
-                    <input style={{ border: emptyPasswordColor }} onKeyUp={checkpassword(setMatchPassword, setPasswordsMatch)} type='password' maxLength="35" id='password1' name='password1' placeholder='Passowrd' />
-                    <input style={{ border: emptyPasswordColor }} onKeyUp={checkpassword(setMatchPassword, setPasswordsMatch)} type='password' maxLength="35" id='password2' name='password2' placeholder='Confirm passowrd' />
-                    {passwordsMatch}
-
-                    {enterPassword ? <label>Please enter both password fields</label> : null}
-                    <div className='passwordStrength' name='passwordBox'>
-                        Password Strengh -
-                    <progress max="100" name='passwordStrength' value="0" id="meter"></progress>
-                        <div id="passwordStrengthText"></div>
-                    </div>
-                    {weekPassword ? <div className='passwordRequirements'>
-                        <span>Password requirements:</span>
-                        <span>* At least 6 characters.</span>
-                        <span>* At least one Upper case / Symbol / Number.</span>
+                    {infoTaken ? <div className="mb-3">
+                        Username or Email is taken!
                     </div> : null}
-                    <button>Create Account</button>
+                    {badInput ? <div className="mb-3">
+                        Please check you have filled the form!
+                    </div> : null}
+
+
+                    <div className="mb-3" name='user'>
+                        <input style={{ border: emptyUsernameColor }} className='form-control' type='text' name='username' maxLength="35" placeholder='Username' />
+                        {enterUsername ? <label className='form-text light'>Please enter Username</label> : null}
+                    </div>
+                    <div className="mb-3" name='email'>
+                        <input style={{ border: emptyEmailColor }} className='form-control' type='email' name='email' maxLength="40" placeholder='E-mail address' />
+                        {enterEmail ? <label className='form-text light'>Please enter Email</label> : null}
+                    </div>
+                    <div className="mb-3" name='pass'>
+                        <input style={{ border: emptyPasswordColor }} className="form-control" onKeyUp={checkpassword(setMatchPassword, setPasswordsMatch)} type='password' maxLength="35" id='password1' name='password1' placeholder='Passowrd' />
+                        <input style={{ border: emptyPasswordColor }} className="form-control mt-2" onKeyUp={checkpassword(setMatchPassword, setPasswordsMatch)} type='password' maxLength="35" id='password2' name='password2' placeholder='Confirm passowrd' />
+                        {passwordsMatch}
+                        {enterPassword ? <label className='form-text light'>Please enter both password fields</label> : null}
+                    </div>
+                    <div className="mb-3 light" name='passwordBox'>
+                            <span>Password strength - </span> <label id="passwordStrengthText" className='form-text light'></label>
+                            <progress max="100" className='meter' name='passwordStrength' value="0" id="meter" /></div>
+                    {weekPassword ? <div className="mb-3 light">
+                        Password is not strong enough!
+                    </div> : null}
+                    {weekPassword ? <div className="mb-3 passwordStrength light" name='passwordBox'>
+                        <span>Password requirements:</span>
+                        <span> At least 6 characters.</span>
+                        <span> At least one Upper case / Symbol / Number.</span>
+                    </div> : null}
+
+
+                    <button type="submit" className="btn btn-primary">Create account</button>
                 </form>
             }
 
@@ -73,10 +83,10 @@ const RegisterForm = ({ setLoggedIn }) => {
 
 const handleRegister = (setLoggedIn, setTaken, setWeekPassword, setBadInput, setEnterUsername, setUsernameColor, setEnterEmail, setEmailColor, setEnterPassword, setPasswordColor, setLoadingCircle, setMatchPassword) => e => {
     e.preventDefault()
-    const username = e.target.children.username.value
-    const email = e.target.children.email.value
-    const password1 = e.target.children.password1.value;
-    const password2 = e.target.children.password2.value;
+    const username = e.target.children.user.children.username.value
+    const email = e.target.children.email.children.email.value
+    const password1 = e.target.children.pass.children.password1.value;
+    const password2 = e.target.children.pass.children.password2.value;
     const passwordStrength = e.target.children.passwordBox.children.passwordStrength.value
 
 
@@ -130,8 +140,7 @@ const handleRegister = (setLoggedIn, setTaken, setWeekPassword, setBadInput, set
                             buttons: false,
                             timer: 1500,
                         });
-                        window.location.href = "/"
-                        setLoggedIn(false)
+                        setLoggedIn(true)
                     } else {
                         setLoadingCircle(false)
                         setTaken(true)

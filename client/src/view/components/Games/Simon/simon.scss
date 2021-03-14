@@ -1,10 +1,10 @@
 .simon__container {
     border-radius: 2%;
-    margin: 3% auto;
-    height: 90vh;
+    margin: auto;
+    height: 80vh;
+    padding: 5px;
     display: grid;
     grid-template-rows: 0.2fr 0.01fr 1fr;
-    grid-gap: 1%;
     box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
 
     .simon__topHalf {
@@ -22,7 +22,7 @@
             padding: 10px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid black;
+            border-right: 1px solid white;
 
             .simon__titleBox {
                 display: flex;
@@ -34,7 +34,8 @@
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                margin-left: 13%;
+                margin-left: 1%;
+
                 .simon_leaderboard {
                     align-self: center;
                     justify-self: center;
@@ -53,7 +54,7 @@
             justify-content: center;
             align-items: center;
             padding: 5px;
-            border-left: 1px solid black;
+            border-left: 1px solid white;
 
 
         }
@@ -84,7 +85,7 @@
         justify-content: center;
         box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 
-        .gameOverGuest{
+        .gameOverGuest {
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -101,19 +102,21 @@
 
         .simon_boxes {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            ;
-            grid-gap: 0.9%;
+            grid-template-columns: 1fr 1fr;;
+            grid-gap: 0.3%;
             width: 70%;
             height: 95%;
             margin: auto;
             margin-top: 1%;
             justify-items: center;
+            border: 1px solid white;
+            border-radius: 10%;
+            overflow: hidden;
 
 
             .boxes_box {
                 border-radius: 5%;
-                border: 1px solid lightgray;
+                border: 3px solid white;
                 width: 100%;
                 height: 100%;
                 box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
@@ -140,8 +143,6 @@
 
 @media only screen and (max-width: 744px) {
     .simon__container {
-        .simon__topHalf {}
-
         .simon__gameInfo {
             .gameinfo1 {
                 .gameinfo2 {

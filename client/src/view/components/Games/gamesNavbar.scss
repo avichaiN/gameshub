@@ -1,0 +1,22 @@
+.GamesNavbar__container {
+    height: 100vh;
+    .navBarFather {
+        border-bottom: 1px solid lightgray;
+
+        .navbarContainer {
+            width: 100%;
+
+            .navbarContent {
+                display: flex;
+                justify-content: center;
+                border-radius: 5px;
+
+                .nav-link {
+                    border: 1px solid lightgray;
+                    border-radius: 5px;
+                    margin: 5px;
+                }
+            }
+        }
+    }
+}
