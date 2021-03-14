@@ -2,7 +2,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
     NavLink,
 } from "react-router-dom";
 import './dist/gamesNavbar.css';
@@ -22,12 +21,21 @@ const Games = ({ setFromWhichGame, game, setLoggedIn, loggedIn }) => {
                 <nav className="navbar navbar-expand-lg navbar-light bg-light navBarFather">
                     <div className="container-fluid">
                         <div className="navbar-expand navbarContainer">
-                            <ul className="navbar-nav me-auto mb-2 mb-lg-0 navbarContent">
+                            <button className="btn navbar-brand choseGame">Games</button>
+                            <ul className="navbar-nav mb-2 mb-lg-0 navbarContent">
                                 <li className="nav-item">
-                                    <NavLink to='/hangman' exact className='nav-link'>Hangman</NavLink>
+                                    <NavLink activeStyle={{
+                                        fontWeight: "bold",
+                                        backgroundColor: 'green',
+                                        color: "white"
+                                    }} to='/simon' exact className='nav-link'>Simon</NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink to='/simon' exact className='nav-link'>Simon</NavLink>
+                                    <NavLink activeStyle={{
+                                        fontWeight: "bold",
+                                        backgroundColor: 'green',
+                                        color: "white"
+                                    }} to='/hangman' exact className='nav-link'>Hangman</NavLink>
                                 </li>
                             </ul>
                         </div>

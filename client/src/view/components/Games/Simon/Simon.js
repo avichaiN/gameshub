@@ -256,7 +256,8 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     <div style={{ opacity: redOpacity }} onClick={() => playersTurn('red')} className='boxes_box red'></div>
                     <div style={{ opacity: greenOpacity }} onClick={() => playersTurn('green')} className='boxes_box green'></div>
 
-                </div></div>
+                </div>
+            </div>
 
         </div >
     )

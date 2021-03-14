@@ -12,19 +12,23 @@ import {
 import Leaderboard from '../Leaderboard/Leaderboard'
 import LoginRegister from '../Login/Login'
 import Games from '../Games/GamesNav'
+import UpdatePassword from '../Login/UpdatePassword';
 
 const NavBar = () => {
     const [game, setFromWhichGame] = useState('')
     const [loggedIn, setLoggedIn] = useState(false)
     const [guestLoggedIn, setGuestLoggedIn] = useState(false)
+    const [helloUsername, setHelloUsername] = useState('')
 
     useEffect(() => {
         fetch('/auth')
             .then(r => r.json())
             .then(r => {
                 if (r.admin === true) {
+                    setHelloUsername(r.user.username)
                     setLoggedIn(true)
                 } else if (r.user === true) {
+                    setHelloUsername(r.user.username)
                     setLoggedIn(true)
                 }
             })
@@ -35,15 +39,17 @@ const NavBar = () => {
             <div className='navbar__container'>
                 <nav className="navbar navbar-light bg-light mainTitle">
                     <div className="container-fluid">
-                        <a class="navbar-brand ms-5" href="#">
-                            GameNoStop
-                        </a>
+                        <button className="btn navbar-brand ms-5">GameNoStop</button>
+
+                        {loggedIn ? <button className="btn navbar-brand me-5">
+                            Logged in as '{helloUsername}'
+                        </button> : null}
                     </div>
                 </nav>
                 <div className='navbar__nav'>
                     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                         <div className="container-fluid">
-                            <a className="navbar-brand ms-5" href="#">NavBar</a>
+                            <button className="btn navbar-brand ms-5">NavBar</button>
                             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <span className="navbar-toggler-icon"></span>
@@ -62,7 +68,7 @@ const NavBar = () => {
                                             :
                                             <NavLink to='/login-register' className='nav-link'>Sign in or Create account</NavLink>
                                         }
-                                        {guestLoggedIn ? <a className="nav-link" href="#">Hello Guest</a>
+                                        {guestLoggedIn ? <button className=" btn nav-link">Hello Guest</button>
                                             : null}
                                     </li>
                                 </ul>
@@ -80,6 +86,9 @@ const NavBar = () => {
                             <LoginRegister setLoggedIn={setLoggedIn} setGuestLoggedIn={setGuestLoggedIn} />
                         </Route>
                     }
+                    <Route path='/updatePassword'>
+                        <UpdatePassword />
+                    </Route>
                     <Route path='/'>
                         <Games setFromWhichGame={setFromWhichGame} game={game} setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
                     </Route>

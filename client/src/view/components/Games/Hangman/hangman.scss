@@ -1,81 +1,118 @@
 .wrapper {
-    width: 75%;
-    border-radius: 5%;
-    height: 75vh;
+    height: 90vh;
     margin: auto;
     margin-top: 1%;
-    border: 1px solid black;
     display: grid;
-    grid-template-areas:
-        'start stats'
-        'game game';
+    grid-template-rows: 1fr 1fr;
+    border-radius: 5px;
 
-    .hangman__start {
-        // height: 50%;
+    .hangman__infoContainer {
+        height: 100%;
+
+        .hangman__start {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .btn {
+                margin: auto;
+            }
+
+            .title {
+                text-align: center;
+            }
+        }
+
+        .hangman__liveGame {
+            height: 65%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-bottom: 1px solid lightgray;
+
+            .btn {
+                margin: auto;
+            }
+
+            .title {
+                text-align: center;
+            }
+        }
+    }
+
+    .noLoggedIn {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        border: 1px solid black;
-        grid-area: start;
-        width: 100%;
 
-        .btn {
-            margin: auto;
-            width: 50%;
+        .winloseMsg {
+            text-align: center;
         }
-
-        .title {
+        .loginRequest{
             text-align: center;
         }
     }
 
-
     .hangman__stats {
-        border: 1px solid black;
-        grid-area: stats;
+
         display: flex;
-        flex-direction: column;
         justify-content: center;
-        justify-items: center;
+    }
+
+    .winningInfo {
+        text-align: center;
+    }
+
+    .table {
+        border: 1px solid lightgray;
     }
 
     .hangman__game {
-        grid-area: game;
+        height: 100%;
+        margin-top: -12%;
     }
 
     .gameInfo {
-        margin-top: 2.5%;
         text-align: center;
         font-size: 20px;
+
+        #toot{
+            font-size: 30px;
+        }
     }
 
     .lowerWrapper {
-        display: flex;
-        flex-direction: row;
+        margin-top: 5%;
+        display: grid;
+        grid-template-columns: 1fr 0.65fr;
 
         #hangman {
-            width: 45%;
             display: flex;
             justify-content: center;
 
 
             img {
-                width: 50%;
+                width: 85%;
             }
         }
 
         .letters {
-            width: 50%;
-            float: right;
-            margin-right: 5.5%;
-            margin-top: 8%;
+            display: flex;
+            justify-items: center;
+            height: 50%;
+            width: 100%;
+            margin: auto;
 
             #letters {
+                height: 100%;
+                width: 95%;
                 display: grid;
                 grid-template-areas:
                     "q w e r t y u i o p"
                     ". a s d f g h j k l"
                     ". . z x c v b n m .";
+
 
                 #buttonLetter {
                     border: none;
@@ -86,12 +123,41 @@
                     text-align: center;
                     text-decoration: none;
                     display: inline-block;
-                    font-size: 20px;
                     margin: 2% 4%;
                     cursor: pointer;
                     outline: 0;
                 }
+
+                #buttonLetter:hover {
+                    background-color: #005e7e;
+                }
             }
         }
+    }
+}
+
+@media only screen and (max-width: 570px) {
+    .letters {
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        height: 100%;
+        width: 100%;
+        margin: auto;
+
+        #letters {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .wrapper {
+        height: 90vh;
+        margin: auto;
+        grid-column-gap: 1%;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
     }
 }

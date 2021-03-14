@@ -64,7 +64,6 @@ const HangmanLeaderBoard = ({ hangmanByPoints }) => {
         await fetch(`/games/leaderboard/${x}`)
             .then(r => r.json())
             .then(r => {
-                console.log(r)
                 mapHangmanHighScore(r.hangmanLeaders)
             })
     }, [hangmanByPoints])
@@ -84,7 +83,7 @@ const HangmanLeaderBoard = ({ hangmanByPoints }) => {
             )
         })
         setLeaders(
-            <table class="table table-dark table-hover">
+            <table className="table table-dark table-hover">
                 <thead>
                     <tr className='table-dark'>
                         <th scope="col">#</th>
@@ -129,12 +128,12 @@ const SimonLeaderBoard = () => {
         setLeaders(simonMap)
     }
 
-    return (<table class="table table-dark table-hover">
+    return (<table className="table table-dark table-hover">
         <thead>
             <tr className='table-dark'>
                 <th scope="col">#</th>
                 <th scope="col">Username</th>
-                <th scope="col">Highest Level</th>
+                <th scope="col">Level</th>
             </tr>
         </thead>
         <tbody>

@@ -2,6 +2,7 @@
     background-position: center;
     height: 10%;
     width: 40%;
+    overflow: auto;
     margin: auto;
     background-size: cover;
 }
@@ -185,6 +186,15 @@ section {
             transform: translateY($tend * 1px) translateZ(0);
             opacity: 0;
         }
+    }
+}
+
+@media only screen and (max-width: 531px) {
+    .bgLogo{
+        margin-top: 10%;
+    }
+    .hover {
+        display: none
     }
 }
 

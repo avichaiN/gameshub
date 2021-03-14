@@ -31,11 +31,7 @@
             }
 
             .simon__buttons {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-                margin-left: 1%;
+
 
                 .simon_leaderboard {
                     align-self: center;
@@ -113,7 +109,7 @@
             grid-gap: 1%;
             justify-items: center;
             border-radius: 45%;
-            box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
             overflow: hidden;
 
             .boxes_box {

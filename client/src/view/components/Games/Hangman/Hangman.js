@@ -28,10 +28,11 @@ const Hangman = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
     const [letters, setLetters] = useState('')
     const [isAdmin, setAdmin] = useState(false)
     const [allWords, setAllWords] = useState('')
-    const [gameOver, setGameOver] = useState(false)
+    const [gameOver, setGameOver] = useState(true)
     const [pointsAmount, setPoints] = useState(0)
     const [victorysAmount, setVictorys] = useState(0)
     const [losesAmount, setLoses] = useState(0)
+    const [wordsFetched, setWordsFetched] = useState(false)
 
     useEffect(() => {
         fetch('/auth')
@@ -52,88 +53,96 @@ const Hangman = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
             })
         fetch("/games/hangman")
             .then(r => r.json())
-            .then(data => (
+            .then(data => {
                 hangmanWords = data.hangmanWords
-            ))
+                setWordsFetched(true)
+            })
     }, [])
     const resetGame = () => {
+        clearInterval(timerInterval);
         setGameOver(true)
         setNewGameButton(true)
     }
     return (
-        <div className="wrapper bg-light">
+        <div className="wrapper container-sm bg-light mt-2">
 
-            {newGame ?
-                <div className='hangman__start'>
-                    <h4 className='title mt-2'>Hangman</h4>
-                    < button className='btn btn-success' onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer(Extra points)</button>
-                    < button className="btn btn-success" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, false)}>Start Game with unlimated time</button>
-                    <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
+            {wordsFetched ?
+                <div className='hangman__infoContainer'>
+                    {newGame ?
+                        <div className='hangman__start'>
+                            <h4 className='title mt-2'>Hangman</h4>
+                            < button className='btn btn-success' onClick={() => handleNewGameTimer(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, timer, setTimer)}>Start game with timer(Extra points)</button>
+
+                            < button className="btn btn-success" onClick={() => handleNewGameUnlimated(setStrikesDom, setHangmanImg, setNewGameButton, setHiddenWord, setLetters, setHintButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setOnTime, false)}>Start Game with unlimated time</button>
+
+                            {loggedIn ?
+
+                                <div className='hangman__stats'>
+                                    <table className="table table-dark table-hover">
+                                        <thead>
+                                            <tr className='table-light'>
+                                                <th scope="col">Points</th>
+                                                <th scope="col">Victory's</th>
+                                                <th scope="col">Loses</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr className='table-light'>
+                                                <th scope="col">{pointsAmount}</th>
+                                                <th scope="col">{victorysAmount}</th>
+                                                <th scope="col">{losesAmount}</th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                :
+                                <div className='hangman__stats noLoggedIn'>
+                                    <h1 className='winloseMsg'>{finishMsg}</h1>
+                                    <h2 className='loginRequest'>Log-in to keep track of your games!</h2>
+                                </div>
+                            }
+
+                            <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
+                            <p className='winningInfo'>Win with timer +3 points<br />Win unlimated +2 points<br />Lose -1 point</p>
+                        </div>
+                        :
+                        <div className='hangman__liveGame'>
+                            <h4 className='title mt-2'>Hangman</h4>                    <button onClick={resetGame} className='btn btn-danger'>Reset</button>
+                            <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
+                        </div>
+                    }
                 </div>
                 :
-                <div className='hangman__start'>
-                    <h4 className='title mt-2'>Hangman</h4>                    <button onClick={resetGame} className='btn btn-danger'>Reset</button>
-                    <Link onClick={() => setFromWhichGame('hangman')} className='games__leaderboard btn btn-primary hangman_leaderboard' to='/leaderboard'>Leaderboard</Link>
-                </div>
+                <div className="load bg-dark"></div>
             }
-            {loggedIn ?
-                <div className='hangman__stats'>
-                    <p>Win with timer +3 points<br />Win unlimated +2 points<br />Lose -1 point</p>
-                    <table class="table table-dark table-hover">
-                        <thead>
-                            <tr className='table-dark'>
-                                <th scope="col">Points</th>
-                                <th scope="col">Victory's</th>
-                                <th scope="col">Loses</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className='table-dark'>
-                                <th scope="col">{pointsAmount}</th>
-                                <th scope="col">{victorysAmount}</th>
-                                <th scope="col">{losesAmount}</th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                :
-                <div className='hangman__stats'>
-                    <p>{finishMsg}</p>
-                    <p>Log-in to keep track of your games!</p>
-                    <p>Win with timer +3 points<br />Win unlimated +2 points<br />Lose -1 point</p>
-                </div>
-            }
-
             {
                 gameOver ?
                     null
                     :
-
-                    <div className='hangman__game'>
+                    <div className='hangman__game bg-light'>
                         <div className="gameInfo">
                             <div id="strikes">{strikesDom}</div>
                             <div id="toot">{hiddenWord}</div>
                             {onTime ? <div>{timer}</div> : null}
-                            <p>{hintButton}</p>
                         </div>
 
                         <div className="lowerWrapper">
-                            <div id="hangman">
-                                <img src={hangmanImg} />
-                            </div>
                             <div className="letters">
                                 <div id="letters">{letters}</div>
+                            </div>
+                            <div id="hangman">
+                                <img alt={hangmanImg} src={hangmanImg} />
                             </div>
                         </div>
                     </div>
             }
 
-            {/* {
+            {
                 isAdmin ?
                     <HangmanAdmin allWords={allWords} setAllWords={setAllWords} />
                     :
                     null
-            } */}
+            }
         </div >
     )
 }
@@ -150,7 +159,7 @@ const handleNewGameTimer = async (setStrikesDom, setHangmanImg, setNewGameButton
     strikes = 6
     const onTime = true
 
-    let twoMinutes = 60 * 2
+    let twoMinutes = 60 * 1.5
     startTimer(twoMinutes, setTimer);
     const chosenWord = hangmanWords[Math.floor(Math.random() * hangmanWords.length)].word
     setStrikesDom(`You have ${strikes} strikes left.`)
@@ -205,7 +214,7 @@ const createHiddenWord = (onTime, setLetters, setStrikesDom, setNewGameButton, s
     let chosenWordArray = []
 
     for (let i = 0; i < chosenWord.length; i++) {
-        if (chosenWord.charAt(i) != " ") {
+        if (chosenWord.charAt(i) !== " ") {
             chosenWordArray.push("_")
         } else {
             chosenWordArray.push("-")
@@ -291,7 +300,7 @@ const checkLose = async (strikes, setLetters, setHiddenWord, setStrikesDom, setN
 const checkVictory = async (onTime, chosenWordArray, setLetters, setStrikesDom, setHiddenWord, setNewGameButton, setGameOver, setFinish, setPoints, setVictorys, setLoses, setHangmanImg) => {
     let victoryCondition = chosenWordArray.length
     chosenWordArray.forEach(letter => {
-        if (letter != "_") {
+        if (letter !== "_") {
             victoryCondition--
         }
     })
