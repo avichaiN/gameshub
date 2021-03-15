@@ -30,8 +30,8 @@ app.use("/games", gamesRoute)
 
 app.use(express.static(path.join(__dirname, '.', 'client', 'build')));
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, "./public", "Categories.html"));
-//   })
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '.', 'client', 'build'));
+})
 
 app.listen(port, () => { console.log(`listen on port ${port}`) })
