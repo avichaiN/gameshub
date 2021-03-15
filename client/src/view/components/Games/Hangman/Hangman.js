@@ -38,7 +38,9 @@ const Hangman = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
         fetch('/auth')
             .then(r => r.json())
             .then(r => {
+                console.log(r)
                 if (r.admin === true) {
+                    console.log('admin')
                     setAdmin(true)
                     setLoggedIn(true)
                     setPoints(r.user.hangmanPoints)

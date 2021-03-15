@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import swal from 'sweetalert';
 import { checkpassword } from './passwordStrength'
 import { checkIfPasswordsMatch } from './passwordStrength'
-import LoadingCircle from '../LoadingCircle'
+import LoadingCircle from '../LoadingCircle/LoadingCircle'
 
 const RegisterForm = ({ setLoggedIn }) => {
     const [infoTaken, setTaken] = useState(false)

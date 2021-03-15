@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoadingCircle from '../LoadingCircle'
+import LoadingCircle from '../LoadingCircle/LoadingCircle'
 import swal from 'sweetalert';
 
 

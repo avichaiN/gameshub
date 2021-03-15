@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './dist/login.css';
-import LoadingCircle from '../LoadingCircle'
+import LoadingCircle from '../LoadingCircle/LoadingCircle'
 import ForgotPassword from './ForgotPassword'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
