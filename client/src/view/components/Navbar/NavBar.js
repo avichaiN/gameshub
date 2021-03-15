@@ -4,7 +4,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
     NavLink,
 } from "react-router-dom";
 
@@ -57,7 +56,7 @@ const NavBar = () => {
                             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                                 <ul className="navbar-nav me-auto mb-2 mb-lg-0 navBarContent">
                                     <li className="nav-item">
-                                        <NavLink to='/' exact className='nav-link'>Games</NavLink>
+                                        <NavLink to='/' className='nav-link'>Games</NavLink>
                                     </li>
                                     <li className="nav-item">
                                         <NavLink to='/leaderboard' onClick={() => setFromWhichGame('')} className='nav-link'>Leaderboard</NavLink>

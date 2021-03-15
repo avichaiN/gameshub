@@ -54,7 +54,6 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
     }, [])
 
     const handleStartSimon = () => {
-        // console.log('start game')
         combination = []
         clickNum = 0
         setScore(0)
