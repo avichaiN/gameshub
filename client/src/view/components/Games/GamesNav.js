@@ -7,7 +7,7 @@ import {
 import './dist/gamesNavbar.css';
 import CoolAnimation from '../CoolAnimation/CoolAnimation'
 
-
+import TypingTest from './TypingTest/TypingTest'
 import Hangman from './Hangman/Hangman'
 import Simon from './Simon/Simon'
 import Leaderboard from '../Leaderboard/Leaderboard'
@@ -37,6 +37,13 @@ const Games = ({ setFromWhichGame, game, setLoggedIn, loggedIn }) => {
                                         color: "white"
                                     }} to='/hangman' exact className='nav-link'>Hangman</NavLink>
                                 </li>
+                                <li className="nav-item">
+                                    <NavLink activeStyle={{
+                                        fontWeight: "bold",
+                                        backgroundColor: 'green',
+                                        color: "white"
+                                    }} to='/typing' exact className='nav-link'>Typing Test</NavLink>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -48,6 +55,9 @@ const Games = ({ setFromWhichGame, game, setLoggedIn, loggedIn }) => {
 
                     <Route path="/simon">
                         <Simon setFromWhichGame={setFromWhichGame} setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
+                    </Route>
+                    <Route path="/typing">
+                        <TypingTest setFromWhichGame={setFromWhichGame} setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
                     </Route>
                     <Route path="/leaderboard">
                         <Leaderboard setFromWhichGame={setFromWhichGame} game={game} setLoggedIn={setLoggedIn} loggedIn={loggedIn} />

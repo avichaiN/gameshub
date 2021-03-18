@@ -13,7 +13,6 @@ const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3')
 const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3')
 const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
 const buzz = new Audio('https://cdn.rawgit.com/Cu7ious/React.js-based-Simon-Game/master/assets/sounds/buzz.mp3')
-const trumpet = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
 let combination = []
 let clickNum = 0
 
@@ -71,8 +70,7 @@ const Simon = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
             if (i > combination.length) {
                 clearInterval(gameInterval)
             }
-        }, 600);
-
+        }, 300);
     }
     const displayCombination = (i) => {
 
