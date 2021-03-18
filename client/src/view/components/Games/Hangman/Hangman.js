@@ -114,7 +114,7 @@ const Hangman = ({ setFromWhichGame, setLoggedIn, loggedIn }) => {
                     }
                 </div>
                 :
-                <div className="load bg-dark"></div>
+                <div className="load"></div>
             }
             {
                 gameOver ?
