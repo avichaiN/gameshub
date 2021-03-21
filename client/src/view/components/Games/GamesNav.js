@@ -37,13 +37,6 @@ const Games = ({ setFromWhichGame, game, setLoggedIn, loggedIn }) => {
                                         color: "white"
                                     }} to='/hangman' exact className='nav-link'>Hangman</NavLink>
                                 </li>
-                                <li className="nav-item">
-                                    <NavLink activeStyle={{
-                                        fontWeight: "bold",
-                                        backgroundColor: 'green',
-                                        color: "white"
-                                    }} to='/typing' exact className='nav-link'>Typing Test</NavLink>
-                                </li>
                             </ul>
                         </div>
                     </div>
